@@ -71,7 +71,10 @@
     return b;
   }
 
-  /* ---------- sound in: the browser's speech recognition ---------- */
+  /* ---------- sound in: the browser's speech recognition ----------
+     Say it goes through three visible steps: "Starting…" while the phone opens the microphone,
+     "Speak now" once it is really listening, then the words as they are heard. It stops by itself
+     the moment the phrase matches, so there is no waiting for the phone to decide you are done. */
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   var hearing = null;
   if (SR) app.classList.remove("no-mic");
@@ -79,38 +82,59 @@
     $("micnote").hidden = false;
     $("micnote").textContent = "This browser cannot check your speech. Listen, repeat out loud, and mark what you know.";
   }
-  function endHearing(reason) {
-    if (!hearing) return;
-    var cur = hearing; hearing = null;
-    cur.btn.textContent = cur.label; cur.btn.classList.remove("live");
-    if (reason === "not-allowed" || reason === "service-not-allowed") {
-      app.classList.add("no-mic");
-      $("micnote").hidden = false;
-      $("micnote").textContent = "The microphone is blocked for this app. Allow it in your browser settings, then reload.";
-    }
-    cur.done(cur.alts, reason);
-  }
-  function hear(btn, done) {
+  function hear(btn, target, live, done) {
     if (!SR) return;
     if (hearing) {
       var same = hearing.btn === btn;
-      try { hearing.rec.abort(); } catch (e) {}
-      endHearing("stopped");
+      hearing.finish(same ? "stopped" : "replaced");
       if (same) return;
     }
     stopAudio();
     var rec = new SR();
-    rec.lang = "ru-RU"; rec.interimResults = false; rec.maxAlternatives = 3;
-    var mine = hearing = { btn: btn, label: btn.textContent, done: done, alts: [], rec: rec };
-    btn.textContent = "Listening… tap to stop"; btn.classList.add("live");
+    rec.lang = "ru-RU"; rec.interimResults = true; rec.maxAlternatives = 3; rec.continuous = false;
+    var label = btn.textContent, best = "", top = 0, heard = "", quiet = 0, limit = 0, started = false, over = false, why = "";
+    function finish(reason) {
+      if (over) return;
+      over = true;
+      clearTimeout(quiet); clearTimeout(limit);
+      if (hearing === me) hearing = null;
+      try { rec.abort(); } catch (e) {}
+      btn.textContent = label; btn.classList.remove("live");
+      if (reason === "not-allowed" || reason === "service-not-allowed") {
+        reason = "denied";
+        app.classList.add("no-mic");
+        $("micnote").hidden = false;
+        $("micnote").textContent = "The microphone is blocked for this app. Allow it in your browser settings, then reload.";
+      }
+      done({ heard: best || heard, score: top, reason: reason });
+    }
+    var me = hearing = { btn: btn, finish: finish };
+    btn.textContent = "Starting…"; btn.classList.add("live");
+    live("Getting the microphone ready…");
+    limit = setTimeout(function () { finish(started ? "silence" : "nostart"); }, 9000);
+    function ready() {
+      if (started || over) return;
+      started = true; btn.textContent = "Speak now"; live("Speak now…");
+    }
+    rec.onstart = ready; rec.onaudiostart = ready;
     rec.onresult = function (e) {
-      for (var i = 0; i < e.results.length; i++)
-        for (var j = 0; j < e.results[i].length; j++) mine.alts.push(e.results[i][j].transcript);
+      if (over) return;
+      ready();
+      var joined = "", cands = [];
+      for (var i = 0; i < e.results.length; i++) {
+        joined += e.results[i][0].transcript + " ";
+        for (var j = 0; j < e.results[i].length; j++) cands.push(e.results[i][j].transcript);
+      }
+      heard = joined.trim(); cands.push(heard);
+      cands.forEach(function (c) { var x = score(target, c); if (x > top) { top = x; best = c; } });
+      if (heard) live("Hearing: " + heard);
+      if (top >= 1) { finish("match"); return; }
+      clearTimeout(quiet);
+      quiet = setTimeout(function () { finish(top >= 0.8 ? "match" : "quiet"); }, top >= 0.8 ? 700 : 1600);
     };
-    var why = "";
     rec.onerror = function (e) { why = e.error; };
-    rec.onend = function () { if (hearing === mine) endHearing(why); };
-    try { rec.start(); } catch (e) { endHearing("failed"); }
+    rec.onend = function () { finish(why || "end"); };
+    try { rec.start(); } catch (e) { finish("nostart"); }
   }
   var NUM = { "1": "один", "2": "два", "3": "три", "4": "четыре", "5": "пять", "6": "шесть", "7": "семь", "8": "восемь", "9": "девять", "10": "десять", "20": "двадцать", "100": "сто" };
   /* The phone often writes a spoken number as digits ("10"), so turn digits back into words before comparing. */
@@ -173,19 +197,22 @@
     var help = h("button", { class: "act helpbtn", text: "Help" });
     help.addEventListener("click", function () { item.classList.toggle("open"); });
     var mic = h("button", { class: "act mic", text: "Say it" });
+    function live(text) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; }
     mic.addEventListener("click", function () {
-      hear(mic, function (alts, reason) {
-        if (!alts.length) {
-          if (reason === "not-allowed" || reason === "service-not-allowed" || reason === "stopped") return;
+      hear(mic, p.ru, live, function (r) {
+        if (!r.heard) {
+          if (r.reason === "denied" || r.reason === "stopped" || r.reason === "replaced") { verdict.hidden = true; return; }
           verdict.hidden = false; verdict.className = "verdict mid";
-          verdict.textContent = "I did not catch anything. Tap Say it and speak right away.";
+          verdict.textContent = r.reason === "nostart"
+            ? "The microphone did not start. Try again, or open this page in Safari."
+            : "I did not hear anything. Tap Say it, wait for Speak now, then say it.";
           return;
         }
-        var best = alts[0], s = 0;
-        alts.forEach(function (a) { var x = score(p.ru, a); if (x > s) { s = x; best = a; } });
+        var s = r.score;
         verdict.hidden = false; verdict.textContent = "";
         verdict.className = "verdict " + (s >= 0.8 ? "good" : "mid");
-        verdict.append(h("b", { text: s >= 0.8 ? "That's it. " : s >= 0.5 ? "Close. " : "Not yet. " }), "I heard: " + best);
+        verdict.append(h("b", { text: s >= 0.8 ? "That's it. " : s >= 0.5 ? "Close. " : "Not yet. " }),
+          "I heard: " + r.heard + (s >= 0.8 ? "" : ". Tap Listen, then try again."));
         if (s >= 0.8 && !learned[p.ru]) mark(p, item, got, true);
       });
     });

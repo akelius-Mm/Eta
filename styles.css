@@ -115,3 +115,9 @@ label.field { font-size: 14px; font-weight: 600; }
 @media (prefers-reduced-motion: no-preference) { .act, .tabs button, .switch { transition: background-color .12s, border-color .12s; } }
 .wrap { padding-top: calc(20px + env(safe-area-inset-top, 0px)); padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
 .top a.act { flex: 1; text-decoration: none; }
+.verdict.live { background: var(--cobalt-soft); color: var(--cobalt); }
+.act.live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .act.live::before { animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .25; } }
+}
