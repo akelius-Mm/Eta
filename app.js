@@ -186,6 +186,7 @@
     got.setAttribute("aria-pressed", String(on)); item.classList.toggle("done", on);
     renderCount(); renderTopics();
   }
+  var PRAISE = [["Молодец!", "Well done"], ["Отлично!", "Excellent"], ["Правильно!", "Correct"], ["Очень хорошо!", "Very good"]];
   function phraseItem(p) {
     var verdict = h("div", { class: "verdict", hidden: "" });
     var item = h("div", { class: "item" + (learned[p.ru] ? " done" : "") },
@@ -211,7 +212,10 @@
         var s = r.score;
         verdict.hidden = false; verdict.textContent = "";
         verdict.className = "verdict " + (s >= 0.8 ? "good" : "mid");
-        verdict.append(h("b", { text: s >= 0.8 ? "That's it. " : s >= 0.5 ? "Close. " : "Not yet. " }),
+        /* Spoken Russian feedback once the microphone is released: praise on a match, "once more" on a miss. */
+        var word = s >= 0.8 ? PRAISE[Math.floor(Math.random() * PRAISE.length)] : ["Ещё раз!", "Once more"];
+        setTimeout(function () { sayAloud(word[0]); }, 350);
+        verdict.append(h("b", { text: s >= 0.8 ? word[0] + " " + word[1] + ". " : s >= 0.5 ? "Close. " : "Not yet. " }),
           "I heard: " + r.heard + (s >= 0.8 ? "" : ". Tap Listen, then try again."));
         if (s >= 0.8 && !learned[p.ru]) mark(p, item, got, true);
       });
