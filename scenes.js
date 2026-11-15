@@ -1,5 +1,85 @@
 /* Scripted conversations. Each line: T (her family speaks) or Y (your reply) | Russian | how to say it | English */
 window.SCENES = [
+["First hello", `T|Здравствуйте!|ZDRAST-vooy-tye|Hello!
+Y|Здравствуйте!|ZDRAST-vooy-tye|Hello!
+T|Как дела?|kak dee-LA|How are you?
+Y|Хорошо, спасибо.|ha-ra-SHOH, spa-SEE-ba|Good, thank you.
+T|Очень приятно.|OH-chen pree-YAHT-na|Nice to meet you.
+Y|Очень приятно.|OH-chen pree-YAHT-na|Nice to meet you.
+T|Проходите!|pra-kha-DEE-tye|Come in!
+Y|Спасибо!|spa-SEE-ba|Thank you!`, "easy"],
+["Yes, please and no, thank you", `T|Хотите чаю?|kha-TEE-tye CHA-yoo|Would you like some tea?
+Y|Да, пожалуйста.|da, pa-ZHAH-loos-ta|Yes, please.
+T|С сахаром?|s SA-kha-ram|With sugar?
+Y|Нет, спасибо.|nyet, spa-SEE-ba|No, thank you.
+T|Хотите кофе?|kha-TEE-tye KOH-fye|Would you like coffee?
+Y|Нет, спасибо.|nyet, spa-SEE-ba|No, thank you.
+T|Ещё чаю?|ye-SHCHOH CHA-yoo|More tea?
+Y|Да, пожалуйста.|da, pa-ZHAH-loos-ta|Yes, please.
+T|Вкусно?|FKOOS-na|Is it tasty?
+Y|Очень вкусно!|OH-chen FKOOS-na|Very tasty!`, "easy"],
+["Saying thank you", `T|Это вам.|EH-ta vam|This is for you.
+Y|Спасибо!|spa-SEE-ba|Thank you!
+T|Пожалуйста. Садитесь.|pa-ZHAH-loos-ta. sa-DEE-tyes|You're welcome. Sit down.
+Y|Спасибо.|spa-SEE-ba|Thank you.
+T|Вот чай.|vot chai|Here is the tea.
+Y|Большое спасибо!|bal-SHOH-ye spa-SEE-ba|Thank you very much!
+T|Не за что.|NYE-za-shta|Don't mention it.
+Y|Вы очень добры.|vy OH-chen dab-RY|You are very kind.`, "easy"],
+["Your name and where you are from", `T|Как вас зовут?|kak vas za-VOOT|What is your name?
+Y|Меня зовут …|mee-NYA za-VOOT …|My name is … (add your name)
+T|Очень приятно!|OH-chen pree-YAHT-na|Nice to meet you!
+Y|Очень приятно.|OH-chen pree-YAHT-na|Nice to meet you.
+T|Откуда вы?|at-KOO-da vy|Where are you from?
+Y|Я из Америки.|ya eez a-MYE-ree-kee|I'm from America.
+T|Вы говорите по-русски?|vy ga-va-REE-tye pa-ROOS-kee|Do you speak Russian?
+Y|Немного.|nee-MNOH-ga|A little.
+T|Молодец!|ma-la-DYETS|Well done!
+Y|Спасибо!|spa-SEE-ba|Thank you!`, "easy"],
+["Meeting everyone", `T|Это моя мама.|EH-ta ma-YA MA-ma|This is my mom.
+Y|Очень приятно.|OH-chen pree-YAHT-na|Nice to meet you.
+T|Это бабушка.|EH-ta BA-boosh-ka|This is grandmother.
+Y|Здравствуйте!|ZDRAST-vooy-tye|Hello!
+T|Это дедушка.|EH-ta DYE-doosh-ka|This is grandfather.
+Y|Добрый вечер!|DOH-bry VYE-cher|Good evening!
+T|Мы очень рады.|my OH-chen RA-dy|We are very glad.
+Y|Спасибо за приглашение.|spa-SEE-ba za pree-gla-SHEH-nee-ye|Thank you for inviting me.`, "easy"],
+["Eating together", `T|Вы голодны?|vy GOH-lad-ny|Are you hungry?
+Y|Да, немного.|da, nee-MNOH-ga|Yes, a little.
+T|Приятного аппетита!|pree-YAHT-na-va a-pee-TEE-ta|Enjoy your meal!
+Y|Спасибо!|spa-SEE-ba|Thank you!
+T|Вкусно?|FKOOS-na|Is it tasty?
+Y|Очень вкусно!|OH-chen FKOOS-na|Very tasty!
+T|Ещё?|ye-SHCHOH|More?
+Y|Да, пожалуйста.|da, pa-ZHAH-loos-ta|Yes, please.
+T|Ещё?|ye-SHCHOH|More?
+Y|Нет, спасибо.|nyet, spa-SEE-ba|No, thank you.
+T|На здоровье!|na zda-ROH-vye|You're welcome! (what a host says when thanked for food)
+Y|Спасибо за всё.|spa-SEE-ba za FSYOH|Thank you for everything.`, "easy"],
+["Kind words", `T|Вот наш дом.|vot nash dom|Here is our home.
+Y|Очень красиво!|OH-chen kra-SEE-va|Very beautiful!
+T|Это мой сад.|EH-ta moy sat|This is my garden.
+Y|Как хорошо!|kak ha-ra-SHOH|How nice!
+T|Это мой пирог.|EH-ta moy pee-ROK|This is my pie.
+Y|Очень вкусно!|OH-chen FKOOS-na|Very tasty!
+T|Спасибо!|spa-SEE-ba|Thank you!
+Y|Вы прекрасно готовите.|vy pree-KRAS-na ga-TOH-vee-tye|You cook wonderfully.`, "easy"],
+["When you get lost", `T|Как вам наш город?|kak vam nash GOH-rat|How do you like our city?
+Y|Я не понимаю.|ya nye pa-nee-MA-yoo|I don't understand.
+T|Вам нравится город?|vam NRA-veet-sa GOH-rat|Do you like the city?
+Y|Ещё раз, пожалуйста.|ye-SHCHOH ras, pa-ZHAH-loos-ta|One more time, please.
+T|Вам нравится?|vam NRA-veet-sa|Do you like it?
+Y|Да, очень.|da, OH-chen|Yes, very much.
+T|Хорошо!|ha-ra-SHOH|Good!
+Y|Спасибо.|spa-SEE-ba|Thank you.`, "easy"],
+["Short goodbye", `T|Уже поздно.|oo-ZHE POZ-na|It's late already.
+Y|Да, нам пора.|da, nam pa-RA|Yes, it's time for us to go.
+T|Приходите ещё!|pree-kha-DEE-tye ye-SHCHOH|Come again!
+Y|С удовольствием!|s oo-da-VOLST-vee-yem|With pleasure!
+T|До свидания!|da svee-DA-nee-ya|Goodbye!
+Y|До свидания!|da svee-DA-nee-ya|Goodbye!
+T|Спокойной ночи!|spa-KOY-nay NOH-chee|Good night!
+Y|Спокойной ночи!|spa-KOY-nay NOH-chee|Good night!`, "easy"],
 ["Arriving at the door", `T|Здравствуйте! Проходите, пожалуйста.|ZDRAST-vooy-tye! pra-kha-DEE-tye, pa-ZHAH-loos-ta|Hello! Come in, please.
 Y|Здравствуйте! Очень приятно.|ZDRAST-vooy-tye! OH-chen pree-YAHT-na|Hello! Nice to meet you.
 T|Как вас зовут?|kak vas za-VOOT|What is your name?

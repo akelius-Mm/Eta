@@ -126,12 +126,14 @@
     }
     stopAudio();
     var rec = new SR();
-    rec.lang = "ru-RU"; rec.interimResults = true; rec.maxAlternatives = 3; rec.continuous = false;
+    rec.lang = "ru-RU"; rec.interimResults = true; rec.maxAlternatives = 3;
+    rec.continuous = true; /* keep listening through pauses while you think of the next word */
+    var words = norm(target).split(" ").length, prior = "", restarts = 0;
     var label = btn.textContent, best = "", top = 0, heard = "", quiet = 0, limit = 0, started = false, over = false, why = "";
     function finish(reason) {
       if (over) return;
       over = true;
-      clearTimeout(quiet); clearTimeout(limit);
+      clearTimeout(quiet); clearTimeout(limit); clearTimeout(opening);
       if (hearing === me) hearing = null;
       try { rec.abort(); } catch (e) {}
       btn.textContent = label; btn.classList.remove("live");
@@ -146,10 +148,11 @@
     var me = hearing = { btn: btn, finish: finish };
     btn.textContent = "Starting…"; btn.classList.add("live");
     live("Getting the microphone ready…");
-    limit = setTimeout(function () { finish(started ? "silence" : "nostart"); }, 9000);
+    limit = setTimeout(function () { finish("silence"); }, Math.min(30000, 12000 + 1500 * words));
+    var opening = setTimeout(function () { if (!started) finish("nostart"); }, 9000);
     function ready() {
       if (started || over) return;
-      started = true; btn.textContent = "Speak now"; live("Speak now…");
+      started = true; btn.textContent = "Speak now"; live("Speak now… take your time.");
     }
     rec.onstart = ready; rec.onaudiostart = ready;
     rec.onresult = function (e) {
@@ -160,15 +163,24 @@
         joined += e.results[i][0].transcript + " ";
         for (var j = 0; j < e.results[i].length; j++) cands.push(e.results[i][j].transcript);
       }
-      heard = joined.trim(); cands.push(heard);
+      heard = (prior + " " + joined).trim();
+      cands = cands.map(function (c) { return (prior + " " + c).trim(); }); cands.push(heard);
       cands.forEach(function (c) { var x = score(target, c); if (x > top) { top = x; best = c; } });
       if (heard) live("Hearing: " + heard);
       if (top >= 1) { finish("match"); return; }
       clearTimeout(quiet);
-      quiet = setTimeout(function () { finish(top >= 0.8 ? "match" : "quiet"); }, top >= 0.8 ? 700 : 1600);
+      /* a long pause ends the attempt: 4 seconds mid-sentence, less for a single word or once it already matches */
+      quiet = setTimeout(function () { finish(top >= 0.8 ? "match" : "quiet"); }, top >= 0.8 ? 800 : words > 1 ? 4000 : 2500);
     };
     rec.onerror = function (e) { why = e.error; };
-    rec.onend = function () { finish(why || "end"); };
+    rec.onend = function () {
+      /* the phone sometimes stops listening at a pause; if you were mid-sentence, pick up where it left off */
+      if (!over && heard && top < 0.8 && restarts < 3) {
+        restarts++; prior = heard;
+        try { rec.start(); return; } catch (e) {}
+      }
+      finish(restarts ? "end" : why || "end");
+    };
     try { rec.start(); } catch (e) { finish("nostart"); }
   }
   var NUM = { "1": "один", "2": "два", "3": "три", "4": "четыре", "5": "пять", "6": "шесть", "7": "семь", "8": "восемь", "9": "девять", "10": "десять", "20": "двадцать", "100": "сто" };
@@ -271,9 +283,13 @@
 
   /* ---------- scenes: her family speaks, you answer out loud ---------- */
   var SCENES = window.SCENES.map(function (sc) {
-    return { name: sc[0], lines: sc[1].split("\n").map(function (l) { var p = l.split("|"); return { who: p[0], ru: p[1], say: p[2], en: p[3] }; }) };
+    return { name: sc[0], easy: sc[2] === "easy", lines: sc[1].split("\n").map(function (l) { var p = l.split("|"); return { who: p[0], ru: p[1], say: p[2], en: p[3] }; }) };
   });
-  SCENES.forEach(function (sc, i) { $("scene").append(h("option", { value: String(i), text: sc.name })); });
+  [["Starter: one short answer", true], ["Full conversations", false]].forEach(function (g) {
+    var group = h("optgroup", { label: g[0] });
+    SCENES.forEach(function (sc, i) { if (sc.easy === g[1]) group.append(h("option", { value: String(i), text: sc.name })); });
+    $("scene").append(group);
+  });
   var sceneRun = 0;
   function scrollTo(el) { if (el.scrollIntoView) el.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
   function playScene(index) {
