@@ -48,7 +48,20 @@ window.TOPICS = [
 Я тоже.|ya TOH-zhe|Me too
 Всё в порядке.|fsyo f pa-RYAT-kye|Everything is fine
 Как смешно!|kak smeesh-NOH|How funny!
-Жаль.|zhal|What a pity`],
+Жаль.|zhal|What a pity
+Обязательно!|a-bee-ZA-teel-na|Definitely!
+Договорились!|da-ga-va-REE-lees|Deal!
+Наверное.|na-VYER-na-ye|Probably
+Понятно.|pa-NYAT-na|I see
+Не может быть!|nye MOH-zhet byt|No way!
+Супер!|SOO-pyer|Great!
+Так себе.|tak see-BYE|So-so
+А вы?|a VY|And you?
+Хорошо, спасибо.|ha-ra-SHOH, spa-SEE-ba|Good, thank you
+Да, немного.|da, nee-MNOH-ga|Yes, a little
+Да, очень.|da, OH-chen|Yes, very much
+Да, с удовольствием!|da, s oo-da-VOLST-vee-yem|Yes, with pleasure!
+Очень красиво!|OH-chen kra-SEE-va|Very beautiful!`],
 ["Still learning", `Я учу русский язык.|ya oo-CHOO ROOS-kee ya-ZYK|I'm learning Russian
 Я немного говорю по-русски.|ya nee-MNOH-ga ga-va-RYOO pa-ROOS-kee|I speak a little Russian
 Я хочу говорить по-русски.|ya kha-CHOO ga-va-REET pa-ROOS-kee|I want to speak Russian
@@ -66,7 +79,12 @@ window.TOPICS = [
 Мой русский пока плохой.|moy ROOS-kee pa-KA pla-KHOY|My Russian is still bad
 Я стараюсь.|ya sta-RA-yoos|I'm trying
 Русский язык красивый.|ROOS-kee ya-ZYK kra-SEE-vy|Russian is a beautiful language
-Русский язык трудный.|ROOS-kee ya-ZYK TROOD-ny|Russian is a difficult language`],
+Русский язык трудный.|ROOS-kee ya-ZYK TROOD-ny|Russian is a difficult language
+Как это называется?|kak EH-ta na-zy-VA-yet-sa|What is this called?
+Как правильно?|kak PRA-veel-na|What is the right way to say it?
+Напишите, пожалуйста.|na-pee-SHEE-tye, pa-ZHAH-loos-ta|Please write it down
+Я не помню слово.|ya nye POM-nyoo SLOH-va|I don't remember the word
+Поправляйте меня, пожалуйста.|pa-prav-LYAY-tye mee-NYA, pa-ZHAH-loos-ta|Please correct me`],
 ["At the table", `Приятного аппетита!|pree-YAHT-na-va a-pee-TEE-ta|Enjoy your meal!
 Как вкусно пахнет!|kak FKOOS-na PAKH-neet|It smells delicious!
 Очень вкусно!|OH-chen FKOOS-na|Very tasty!
@@ -100,7 +118,12 @@ window.TOPICS = [
 За хозяйку!|za kha-ZYAY-koo|To the hostess!
 За семью!|za seem-YOO|To the family!
 За встречу!|za FSTRYE-choo|To our meeting!
-За любовь!|za lyoo-BOF|To love!`],
+За любовь!|za lyoo-BOF|To love!
+Можно воды?|MOZH-na va-DY|May I have some water?
+Это домашнее?|EH-ta da-MASH-nye-ye|Is this homemade?
+Какой красивый стол!|ka-KOY kra-SEE-vy stol|What a beautiful table!
+Я за рулём.|ya za roo-LYOM|I'm driving (a polite way to decline a drink)
+Это слишком много.|EH-ta SLEESH-kam MNOH-ga|That's too much`],
 ["Food and drink", `хлеб|khlyep|bread
 суп|soop|soup
 борщ|borshch|borscht (beet soup)
@@ -152,7 +175,8 @@ window.TOPICS = [
 У меня есть брат.|oo mee-NYA yest brat|I have a brother
 У меня есть сестра.|oo mee-NYA yest sees-TRA|I have a sister
 Это моя мама.|EH-ta ma-YA MA-ma|This is my mom (showing a photo)
-Это мой папа.|EH-ta moy PA-pa|This is my dad`],
+Это мой папа.|EH-ta moy PA-pa|This is my dad
+Они в Америке.|a-NEE v a-MYE-ree-kye|They are in America`],
 ["About me", `Я из Америки.|ya eez a-MYE-ree-kee|I'm from America
 Я живу в …|ya zhee-VOO v …|I live in …
 Я работаю в …|ya ra-BOH-ta-yoo v …|I work at …
@@ -278,7 +302,196 @@ window.TOPICS = [
 Мне нужно идти.|mnye NOOZH-na eet-TEE|I need to go
 Не волнуйтесь.|nye val-NOOY-tyes|Don't worry
 Всё будет хорошо.|fsyo BOO-deet ha-ra-SHOH|Everything will be fine
-Мне очень жаль.|mnye OH-chen zhal|I'm very sorry (sympathy)`],
+Мне очень жаль.|mnye OH-chen zhal|I'm very sorry (sympathy)
+Мне интересно.|mnye een-tee-RYES-na|I'm interested
+Мне грустно.|mnye GROOS-na|I'm sad
+Мне нужно отдохнуть.|mnye NOOZH-na ad-dakh-NOOT|I need to rest
+У меня болит голова.|oo mee-NYA ba-LEET ga-la-VA|I have a headache
+Я скучаю по дому.|ya skoo-CHA-yoo pa DOH-moo|I miss home`],
+["Gifts and arriving", `Мы пришли!|my pree-SHLEE|We're here!
+Это для вас.|EH-ta dlya vas|This is for you
+Это цветы для вас.|EH-ta tsvee-TY dlya vas|These flowers are for you
+Это маленький подарок.|EH-ta MA-leen-kee pa-DA-rak|It's a small gift
+Это из Америки.|EH-ta eez a-MYE-ree-kee|It's from America
+Надеюсь, вам понравится.|na-DYE-yoos, vam pa-NRA-veet-sa|I hope you like it
+Спасибо, что пригласили.|spa-SEE-ba, shtoh pree-gla-SEE-lee|Thank you for inviting us
+Извините за опоздание.|eez-vee-NEE-tye za a-paz-DA-nee-ye|Sorry for being late
+Как у вас красиво!|kak oo vas kra-SEE-va|How beautiful your home is!
+Куда повесить куртку?|koo-DA pa-VYE-seet KOORT-koo|Where can I hang my jacket?
+Можно тапочки?|MOZH-na TA-pach-kee|May I have slippers? (guests usually wear them indoors)`],
+["Small talk and weather", `Что нового?|shtoh NOH-va-va|What's new?
+Ничего нового.|nee-chee-VOH NOH-va-va|Nothing new
+Всё по-старому.|fsyo pa-STA-ra-moo|Same as always
+Как работа?|kak ra-BOH-ta|How is work?
+Как прошли выходные?|kak pra-SHLEE vy-khad-NY-ye|How was the weekend?
+Очень хорошо.|OH-chen ha-ra-SHOH|Very good
+Какая сегодня погода?|ka-KA-ya see-VOD-nya pa-GOH-da|What's the weather like today?
+Хорошая погода!|ha-ROH-sha-ya pa-GOH-da|Nice weather!
+Сегодня холодно.|see-VOD-nya KHOH-lad-na|It's cold today
+Сегодня тепло.|see-VOD-nya tee-PLOH|It's warm today
+Сегодня жарко.|see-VOD-nya ZHAR-ka|It's hot today
+Идёт дождь.|ee-DYOT dozhd|It's raining
+Идёт снег.|ee-DYOT snyek|It's snowing
+Какой красивый день!|ka-KOY kra-SEE-vy dyen|What a beautiful day!
+Как красиво!|kak kra-SEE-va|How beautiful!`],
+["Helping out", `Чем помочь?|chyem pa-MOCH|How can I help?
+Я помогу.|ya pa-ma-GOO|I'll help
+Давайте я.|da-VAY-tye ya|Let me do it
+Я накрою на стол.|ya na-KROH-yoo na stol|I'll set the table
+Я уберу со стола.|ya oo-bee-ROO sa sta-LA|I'll clear the table
+Я принесу.|ya pree-nee-SOO|I'll bring it
+Я открою дверь.|ya at-KROH-yoo dvyer|I'll open the door
+Куда это поставить?|koo-DA EH-ta pa-STA-veet|Where should I put this?
+Это тяжёлое, давайте я.|EH-ta tee-ZHOH-la-ye, da-VAY-tye ya|That's heavy, let me
+Отдыхайте.|ad-dy-KHAY-tye|Please rest
+Не беспокойтесь.|nye bees-pa-KOY-tyes|Don't trouble yourself
+Мне не трудно.|mnye nye TROOD-na|It's no trouble for me
+Всё готово.|fsyo ga-TOH-va|Everything is ready
+Что ещё нужно?|shtoh ye-SHCHOH NOOZH-na|What else is needed?`],
+["Her and us", `Она моя девушка.|a-NA ma-YA DYE-voosh-ka|She is my girlfriend
+Мы очень счастливы.|my OH-chen SHCHAS-lee-vy|We are very happy
+Мы любим друг друга.|my LYOO-beem droog DROO-ga|We love each other
+Она самая лучшая.|a-NA SA-ma-ya LOOCH-sha-ya|She is the best
+Она очень талантливая.|a-NA OH-chen ta-LANT-lee-va-ya|She is very talented
+Она прекрасно готовит.|a-NA pree-KRAS-na ga-TOH-veet|She cooks wonderfully
+Она похожа на вас.|a-NA pa-KHOH-zha na vas|She looks like you
+Она часто говорит о вас.|a-NA CHAS-ta ga-va-REET a VAS|She often talks about you
+Она учит меня русскому.|a-NA OO-cheet mee-NYA ROOS-ka-moo|She is teaching me Russian
+С ней всегда весело.|s nyey fseeg-DA VYE-see-la|It's always fun with her
+Мы вместе путешествуем.|my VMYES-tye poo-tee-SHEST-voo-yem|We travel together
+Я буду о ней заботиться.|ya BOO-doo a nyey za-BOH-teet-sa|I will take care of her
+Вы воспитали прекрасную дочь.|vy vas-pee-TA-lee pree-KRAS-noo-yoo doch|You raised a wonderful daughter`],
+["Likes and hobbies", `Что вы любите делать?|shtoh vy LYOO-bee-tye DYE-lat|What do you like to do?
+Я люблю гулять.|ya lyoob-LYOO goo-LYAT|I like to go for walks
+Я люблю кино.|ya lyoob-LYOO kee-NOH|I love movies
+Я люблю футбол.|ya lyoob-LYOO foot-BOL|I love soccer
+Я люблю рыбалку.|ya lyoob-LYOO ry-BAL-koo|I love fishing
+Я люблю природу.|ya lyoob-LYOO pree-ROH-doo|I love nature
+Я люблю собак.|ya lyoob-LYOO sa-BAK|I love dogs
+Я играю на гитаре.|ya eeg-RA-yoo na gee-TA-rye|I play guitar
+Я играю в шахматы.|ya eeg-RA-yoo f SHAKH-ma-ty|I play chess
+Вы играете в шахматы?|vy eeg-RA-ye-tye f SHAKH-ma-ty|Do you play chess?
+Давайте сыграем!|da-VAY-tye syg-RA-yem|Let's play!
+Мне нравится русская музыка.|mnye NRA-veet-sa ROOS-ka-ya MOO-zy-ka|I like Russian music
+Какая ваша любимая песня?|ka-KA-ya VA-sha lyoo-BEE-ma-ya PYES-nya|What is your favorite song?
+Я не люблю холод.|ya nye lyoob-LYOO KHOH-lat|I don't like the cold`],
+["Plans and time", `Что мы делаем завтра?|shtoh my DYE-la-yem ZAF-tra|What are we doing tomorrow?
+Давайте пойдём гулять.|da-VAY-tye pay-DYOM goo-LYAT|Let's go for a walk
+Давайте!|da-VAY-tye|Let's! / Sure!
+Пойдёмте.|pay-DYOM-tye|Let's go
+Во сколько?|va SKOL-ka|At what time?
+Сегодня вечером.|see-VOD-nya VYE-chee-ram|This evening
+Завтра утром.|ZAF-tra OO-tram|Tomorrow morning
+На выходных.|na vy-khad-NYKH|On the weekend
+Скоро.|SKOH-ra|Soon
+Мы здесь на неделю.|my zdyes na nee-DYE-lyoo|We're here for a week
+Мы уезжаем завтра.|my oo-yez-ZHA-yem ZAF-tra|We're leaving tomorrow
+Мы приедем летом.|my pree-YE-deem LYE-tam|We'll come in the summer
+Мы готовы.|my ga-TOH-vy|We're ready
+Я подожду.|ya pa-dazh-DOO|I'll wait
+Не спешите.|nye spee-SHEE-tye|No rush`],
+["Health and care", `Как вы спали?|kak vy SPA-lee|How did you sleep?
+Всё хорошо?|fsyo ha-ra-SHOH|Is everything okay?
+Вы устали?|vy oos-TA-lee|Are you tired?
+Вам плохо?|vam PLOH-kha|Are you feeling unwell?
+Вам лучше?|vam LOOCH-she|Are you feeling better?
+Садитесь сюда.|sa-DEE-tyes syoo-DA|Sit here
+Вам помочь встать?|vam pa-MOCH fstat|Can I help you get up?
+Держитесь за меня.|deer-ZHEE-tyes za mee-NYA|Hold on to me
+Осторожно!|as-ta-ROZH-na|Careful!
+Принести воды?|pree-nees-TEE va-DY|Shall I bring water?
+Принести плед?|pree-nees-TEE plyet|Shall I bring a blanket?
+Выздоравливайте!|vy-zda-RAV-lee-vay-tye|Get well soon!
+Не болейте.|nye ba-LYEY-tye|Stay healthy`],
+["Photos and memories", `Это вы?|EH-ta vy|Is this you?
+Это она?|EH-ta a-NA|Is this her?
+Сколько ей здесь лет?|SKOL-ka yey zdyes lyet|How old is she here?
+Какая милая!|ka-KA-ya MEE-la-ya|How cute! (about her)
+Вы очень похожи.|vy OH-chen pa-KHOH-zhee|You look very alike
+Какой красивый город!|ka-KOY kra-SEE-vy GOH-rat|What a beautiful city!
+Где это было?|gdye EH-ta BY-la|Where was this?
+Расскажите ещё.|ras-ka-ZHEE-tye ye-SHCHOH|Tell me more
+Как интересно!|kak een-tee-RYES-na|How interesting!
+Давайте сфотографируемся.|da-VAY-tye sfa-ta-gra-FEE-roo-yem-sa|Let's take a photo together
+Можно вас сфотографировать?|MOZH-na vas sfa-ta-gra-FEE-ra-vat|May I take your picture?
+Улыбнитесь!|oo-lyb-NEE-tyes|Smile!
+Я пришлю вам фото.|ya pree-SHLYOO vam FOH-ta|I'll send you the photo`],
+["On a call", `Алло!|a-LYOH|Hello (on the phone)
+Вы меня слышите?|vy mee-NYA SLY-shee-tye|Can you hear me?
+Я вас слышу.|ya vas SLY-shoo|I can hear you
+Я вас не слышу.|ya vas nye SLY-shoo|I can't hear you
+Я вас вижу!|ya vas VEE-zhoo|I can see you!
+Плохая связь.|pla-KHA-ya svyas|Bad connection
+Одну секунду.|ad-NOO see-KOON-doo|One second
+Как вы там?|kak vy tam|How are you over there?
+У нас всё хорошо.|oo nas fsyo ha-ra-SHOH|We're all fine
+Мы скучаем.|my skoo-CHA-yem|We miss you
+Мы тоже.|my TOH-zhe|We do too
+Она рядом.|a-NA RYA-dam|She's right here
+Я передам ей привет.|ya pee-ree-DAM yey pree-VYET|I'll tell her you said hi
+Созвонимся!|sa-zva-NEEM-sa|Talk soon!
+До связи!|da SVYA-zee|Until next call!`],
+["Holidays and wishes", `С наступающим!|s na-stoo-PA-yoo-shcheem|Happy upcoming New Year! (said in the days before)
+С Рождеством!|s razh-deest-VOM|Merry Christmas!
+С Пасхой!|s PAS-khay|Happy Easter!
+С Восьмым марта!|s vas-MYM MAR-ta|Happy Women's Day! (March 8)
+За Новый год!|za NOH-vy got|To the New Year!
+Какая красивая ёлка!|ka-KA-ya kra-SEE-va-ya YOL-ka|What a beautiful New Year tree!
+Это вам подарок.|EH-ta vam pa-DA-rak|This gift is for you
+Счастья и здоровья!|SHCHAS-tya ee zda-ROH-vya|Happiness and health!
+Всего самого лучшего!|fsee-VOH SA-ma-va LOOCH-she-va|All the very best!
+Желаю вам всего хорошего.|zhe-LA-yoo vam fsee-VOH ha-ROH-she-va|I wish you all the best
+Долгих лет жизни!|DOL-geekh lyet ZHEEZ-nee|Many long years of life!
+Горько!|GOR-ka|"Bitter!" (guests shout it at weddings so the couple kisses)`],
+["Getting around", `Где мы?|gdye my|Where are we?
+Это далеко?|EH-ta da-lee-KOH|Is it far?
+Это близко.|EH-ta BLEES-ka|It's close
+Направо.|na-PRA-va|To the right
+Налево.|na-LYE-va|To the left
+Прямо.|PRYA-ma|Straight ahead
+Поехали!|pa-YE-kha-lee|Let's go! (by car)
+Мы едем на дачу?|my YE-deem na DA-choo|Are we going to the dacha?
+Сколько это стоит?|SKOL-ka EH-ta STOH-eet|How much does this cost?
+Я заплачу.|ya za-pla-CHOO|I'll pay
+машина|ma-SHEE-na|car
+магазин|ma-ga-ZEEN|store
+улица|OO-lee-tsa|street
+город|GOH-rat|city
+аэропорт|a-e-ra-PORT|airport
+дача|DA-cha|summer cottage`],
+["Describing things", `новый|NOH-vy|new
+старый|STA-ry|old
+горячий|ga-RYA-chee|hot (to the touch)
+холодный|kha-LOD-ny|cold
+тёплый|TYOP-ly|warm
+сладкий|SLAT-kee|sweet
+солёный|sa-LYOH-ny|salty
+острый|OST-ry|spicy
+свежий|SVYE-zhee|fresh
+домашний|da-MASH-nee|homemade
+добрый|DOB-ry|kind
+умный|OOM-ny|smart
+весёлый|vee-SYOH-ly|cheerful
+интересный|een-tee-RYES-ny|interesting
+любимый|lyoo-BEE-my|favorite / beloved
+дорогой|da-ra-GOY|dear / expensive
+Это очень красиво.|EH-ta OH-chen kra-SEE-va|This is very beautiful`],
+["Days and seasons", `понедельник|pa-nee-DYEL-neek|Monday
+вторник|FTOR-neek|Tuesday
+среда|sree-DA|Wednesday
+четверг|cheet-VYERK|Thursday
+пятница|PYAT-nee-tsa|Friday
+суббота|soo-BOH-ta|Saturday
+воскресенье|vas-kree-SYE-nye|Sunday
+выходные|vy-khad-NY-ye|weekend
+неделя|nee-DYE-lya|week
+месяц|MYE-seets|month
+год|got|year
+зима|zee-MA|winter
+весна|vees-NA|spring
+лето|LYE-ta|summer
+осень|OH-seen|autumn
+Какой сегодня день?|ka-KOY see-VOD-nya dyen|What day is it today?`],
 ["Little words", `я|ya|I
 вы|vy|you (polite)
 он|on|he
@@ -350,5 +563,10 @@ window.TOPICS = [
 Приезжайте к нам в гости.|pree-yezh-ZHAY-tye k nam v GOS-tee|Come visit us
 Мы скоро приедем.|my SKOH-ra pree-YE-deem|We'll come again soon
 Передавайте привет.|pee-ree-da-VAY-tye pree-VYET|Say hello to everyone for me
-Обнимаю!|ab-nee-MA-yoo|Hugs!`]
+Обнимаю!|ab-nee-MA-yoo|Hugs!
+Спасибо за гостеприимство.|spa-SEE-ba za gas-tee-pree-EEMST-va|Thank you for your hospitality
+Счастливого пути!|shchas-LEE-va-va poo-TEE|Have a safe trip!
+Удачи!|oo-DA-chee|Good luck!
+Мы позвоним.|my pa-zva-NEEM|We'll call
+Напишите нам.|na-pee-SHEE-tye nam|Write to us`]
   ];

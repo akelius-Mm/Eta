@@ -331,13 +331,9 @@
 
   /* ---------- scenes: her family speaks, you answer out loud ---------- */
   var SCENES = window.SCENES.map(function (sc) {
-    return { name: sc[0], easy: sc[2] === "easy", lines: sc[1].split("\n").map(function (l) { var p = l.split("|"); return { who: p[0], ru: p[1], say: p[2], en: p[3] }; }) };
+    return { name: sc[0], lines: sc[1].split("\n").map(function (l) { var p = l.split("|"); return { who: p[0], ru: p[1], say: p[2], en: p[3] }; }) };
   });
-  [["Starter: one short answer", true], ["Full conversations", false]].forEach(function (g) {
-    var group = h("optgroup", { label: g[0] });
-    SCENES.forEach(function (sc, i) { if (sc.easy === g[1]) group.append(h("option", { value: String(i), text: sc.name })); });
-    $("scene").append(group);
-  });
+  SCENES.forEach(function (sc, i) { $("scene").append(h("option", { value: String(i), text: sc.name })); });
   var sceneRun = 0;
   function scrollTo(el) { if (el.scrollIntoView) el.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
   function playScene(index) {
