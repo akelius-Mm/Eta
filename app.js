@@ -112,7 +112,9 @@
     rec.onend = function () { if (hearing === mine) endHearing(why); };
     try { rec.start(); } catch (e) { endHearing("failed"); }
   }
-  function norm(s) { return String(s).toLowerCase().replace(/ё/g, "е").replace(/[^a-zа-я\s]/g, " ").replace(/\s+/g, " ").trim(); }
+  var NUM = { "1": "один", "2": "два", "3": "три", "4": "четыре", "5": "пять", "6": "шесть", "7": "семь", "8": "восемь", "9": "девять", "10": "десять", "20": "двадцать", "100": "сто" };
+  /* The phone often writes a spoken number as digits ("10"), so turn digits back into words before comparing. */
+  function norm(s) { return String(s).toLowerCase().replace(/\d+/g, function (d) { return NUM[d] || d; }).replace(/ё/g, "е").replace(/[^a-zа-я\s]/g, " ").replace(/\s+/g, " ").trim(); }
   function near(a, b) {
     if (a === b) return true;
     if (a.length < 4 || Math.abs(a.length - b.length) > 1) return false;
