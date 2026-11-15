@@ -29,7 +29,7 @@
 
   /* ---------- sound out: the phone's own Russian voice ---------- */
   var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
-  var playing = false, voice = null;
+  var playing = false, voice = null, slow = !!load("rft.slow", false);
   function pickVoice() {
     if (!synth) return;
     var all = synth.getVoices() || [];
@@ -39,7 +39,7 @@
   else app.classList.add("no-audio");
   function utter(text) {
     var u = new SpeechSynthesisUtterance(text);
-    u.lang = "ru-RU"; u.rate = 0.85;
+    u.lang = "ru-RU"; u.rate = slow ? 0.6 : 0.85;
     if (voice) u.voice = voice;
     return u;
   }
@@ -191,7 +191,7 @@
         heard = (prior + " " + joined).trim();
         cands = cands.map(function (c) { return (prior + " " + c).trim(); }); cands.push(heard);
         cands.forEach(function (c) { var x = score(target, c); if (x > top) { top = x; best = c; } });
-        if (heard) live("Hearing: " + heard);
+        if (heard) live("Hearing: " + heard, best || heard);
         if (top >= 1) { finish("match"); return; }
         clearTimeout(quiet);
         /* a long pause ends the attempt: 4 seconds mid-sentence, less for a single word or once it already matches */
@@ -207,6 +207,20 @@
       try { r.start(); } catch (e) { finish("nostart"); }
     }
     if (wasTalking) setTimeout(function () { if (!over) open(); }, 350); else open();
+  }
+  /* Show the phrase word by word so each word can turn green the moment it is heard. */
+  function wordSpans(el, text) {
+    el.textContent = "";
+    String(text).split(/(\s+)/).forEach(function (part) {
+      if (/^\s+$/.test(part)) el.append(part); else if (part) el.append(h("span", { text: part }));
+    });
+  }
+  function paint(el, heard) {
+    var got = norm(heard || "").split(" ").filter(Boolean);
+    Array.prototype.forEach.call(el.children, function (sp) {
+      var w = norm(sp.textContent);
+      sp.classList.toggle("hit", !!w && got.some(function (x) { return near(w, x); }));
+    });
   }
   /* What to tell you when an attempt ends with nothing heard. The short code helps diagnose it from a screenshot. */
   function silentMsg(r) {
@@ -277,9 +291,13 @@
     var help = h("button", { class: "act helpbtn", text: "Help" });
     help.addEventListener("click", function () { item.classList.toggle("open"); });
     var mic = h("button", { class: "act mic", text: "Say it" });
-    function live(text) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; }
+    var ruEl = item.querySelector(".ru");
+    wordSpans(ruEl, p.ru);
+    function live(text, heard) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; paint(ruEl, heard); }
     mic.addEventListener("click", function () {
+      paint(ruEl, "");
       hear(mic, p.ru, live, function (r) {
+        paint(ruEl, r.heard);
         if (!r.heard) {
           if (r.reason === "denied" || r.reason === "stopped" || r.reason === "replaced") { verdict.hidden = true; return; }
           verdict.hidden = false; verdict.className = "verdict mid";
@@ -355,24 +373,37 @@
       /* your reply: in Immersion the answer stays hidden until you ask for Help */
       var y = h("div", { class: "turn" });
       var verdict = h("div", { class: "verdict", hidden: "" });
-      function live(text) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; }
+      var ruEl = h("div", { class: "ru aid", lang: "ru" });
+      wordSpans(ruEl, line.ru);
+      function live(text, heard) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; paint(ruEl, heard); }
+      var moved = false;
       function advance() {
-        if (run !== sceneRun) return;
+        if (run !== sceneRun || moved) return;
+        moved = true;
         if (hearing && hearing.btn === mic) hearing.finish("replaced");
         y.textContent = ""; y.append(h("div", { class: "bubble me", lang: "ru", text: line.ru }));
-        next();
+        setTimeout(next, 700); /* a short beat before she speaks again */
       }
       var mic = h("button", { class: "act primary mic", text: "Say it" });
       mic.addEventListener("click", function () {
+        paint(ruEl, "");
         hear(mic, line.ru, live, function (r) {
           if (run !== sceneRun) return;
+          paint(ruEl, r.heard);
           if (!r.heard) {
             if (r.reason === "denied" || r.reason === "stopped" || r.reason === "replaced") { verdict.hidden = true; return; }
             verdict.hidden = false; verdict.className = "verdict mid";
             verdict.textContent = silentMsg(r);
             return;
           }
-          if (r.score >= 0.8) { advance(); return; }
+          if (r.score >= 0.8) {
+            /* hold on your answer for a moment so you can see what was heard before the scene moves on */
+            verdict.hidden = false; verdict.className = "verdict good"; verdict.textContent = "";
+            verdict.append(h("b", { text: "Молодец! " }), "I heard: " + r.heard);
+            mic.disabled = true;
+            setTimeout(advance, 1500);
+            return;
+          }
           y.classList.add("open");
           verdict.hidden = false; verdict.className = "verdict mid"; verdict.textContent = "";
           verdict.append(h("b", { text: r.score >= 0.5 ? "Close. " : "Not yet. " }), "I heard: " + r.heard + ". Tap Listen, then try again.");
@@ -384,7 +415,7 @@
       skip.addEventListener("click", advance);
       y.append(h("div", { class: "hint" },
         h("div", { class: "who", text: "Your turn" }),
-        h("div", { class: "ru aid", lang: "ru", text: line.ru }),
+        ruEl,
         h("div", { class: "say aid", text: line.say }),
         h("div", { class: "en aid", text: line.en }),
         h("div", { class: "acts" }, mic, listenBtn(line.ru), help2, skip),
@@ -419,6 +450,9 @@
 
   renderTopics(); renderPhrases(); renderCount();
   setImmersion(!!load("rft.immersed", false));
+  function setSlow(on) { slow = on; $("slow").setAttribute("aria-pressed", String(on)); save("rft.slow", on); }
+  $("slow").addEventListener("click", function () { setSlow(!slow); });
+  setSlow(slow);
   show(load("rft.tab", "phrases"));
 
   if ("serviceWorker" in navigator && location.protocol === "https:") {

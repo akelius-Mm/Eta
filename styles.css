@@ -125,3 +125,8 @@ label.field { font-size: 14px; font-weight: 600; }
 #hf .row { justify-content: space-between; }
 #hfstatus { color: var(--cobalt); }
 [hidden] { display: none !important; }
+.settings { display: flex; }
+.settings .switch { min-height: 42px; }
+.ru span.hit { color: var(--good); }
+.verdict.live { font-size: 16px; }
+@media (prefers-reduced-motion: no-preference) { .ru span { transition: color .15s; } }
