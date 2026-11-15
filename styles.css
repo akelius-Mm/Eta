@@ -151,3 +151,8 @@ label.field { font-size: 14px; font-weight: 600; }
 .kaken { font-size: 26px; line-height: 1.25; font-weight: 600; text-align: center; text-wrap: balance; }
 .kakpic { text-align: center; font-size: 56px; }
 .blanks { font-family: var(--font-ru); font-size: 21px; font-weight: 700; text-align: center; overflow-wrap: anywhere; }
+.drawn { color: var(--ink); line-height: 1; }
+.drawn svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; vertical-align: middle; }
+.etapic.cluster { font-size: 58px; align-self: center; border: 2px solid var(--line); border-radius: 18px; padding: 14px 18px; background: var(--bg); letter-spacing: .08em; }
+.pic.cluster { font-size: 24px; }
+.kakpic.cluster { font-size: 36px; }

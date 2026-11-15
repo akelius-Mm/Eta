@@ -37,6 +37,17 @@
   function save(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {} }
   function clean(text) { return String(text || "").replace(/…/g, "").trim(); }
 
+  /* A picture is an emoji, a small group of emoji standing for a room, or one of the drawings in ICONS. */
+  function picNode(pic, cls) {
+    var d = h("div", { class: cls });
+    if (pic.indexOf("svg:") === 0) { d.innerHTML = window.ICONS[pic.slice(4)] || ""; d.classList.add("drawn"); }
+    else {
+      d.textContent = pic;
+      if (Array.from(pic.replace(/\uFE0F/g, "")).length > 1) d.classList.add("cluster");
+    }
+    return d;
+  }
+
   /* ---------- sound out: the phone's own Russian voice ---------- */
   var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
   var playing = false, voice = null, slow = !!load("rft.slow", false);
@@ -306,7 +317,7 @@
     var mic = h("button", { class: "act mic", text: "Say it" });
     var ruEl = item.querySelector(".ru");
     wordSpans(ruEl, p.ru);
-    if (p.pic) item.insertBefore(h("div", { class: "pic", text: p.pic }), item.firstChild);
+    if (p.pic) item.insertBefore(picNode(p.pic, "pic"), item.firstChild);
     function live(text, heard) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; paint(ruEl, heard); }
     mic.addEventListener("click", function () {
       paint(ruEl, "");
@@ -525,7 +536,9 @@
       });
     });
     show.addEventListener("click", function () { answer(false); });
-    card.append(h("div", { class: "etapic", role: "img", "aria-label": "Picture to name", text: cur.pic }),
+    var picture = picNode(cur.pic, "etapic");
+    picture.setAttribute("role", "img"); picture.setAttribute("aria-label", "Picture to name");
+    card.append(picture,
       h("div", { class: "etaask", lang: "ru", text: "Что это?" }), reveal, verdict, grid,
       h("div", { class: "acts" }, mic, help, show, next));
     box.append(card);
@@ -616,7 +629,7 @@
     });
     show.addEventListener("click", function () { answer(false); });
     card.append(h("div", { class: "etaask", lang: "ru", text: "Как сказать по-русски?" }));
-    if (cur.pic) card.append(h("div", { class: "pic kakpic", text: cur.pic }));
+    if (cur.pic) card.append(picNode(cur.pic, "pic kakpic"));
     card.append(h("div", { class: "kaken", text: cur.en }), blanks, reveal, verdict,
       h("div", { class: "acts" }, mic, show, knew, next));
     box.append(card);
