@@ -43,25 +43,60 @@
     if (voice) u.voice = voice;
     return u;
   }
-  function setPlaying(on) { playing = on; $("playall").textContent = on ? "Stop" : "Play all"; }
-  function stopAudio() { if (synth) { try { synth.cancel(); } catch (e) {} } setPlaying(false); }
+  function setPlaying(on) { playing = on; $("handsfree").textContent = on ? "Stop" : "Hands-free"; }
+  function stopAudio() { stopHandsFree(); if (synth) { try { synth.cancel(); } catch (e) {} } }
   function sayAloud(text) {
     text = clean(text);
     if (!text || !synth) return;
-    setPlaying(false);
+    stopHandsFree();
     try { synth.cancel(); synth.speak(utter(text)); } catch (e) {}
   }
-  function playAll(texts) {
-    texts = texts.map(clean).filter(Boolean);
-    if (!texts.length || !synth) return;
-    try {
-      synth.cancel(); setPlaying(true);
-      texts.forEach(function (t, i) {
-        var u = utter(t);
-        if (i === texts.length - 1) u.onend = function () { setPlaying(false); };
-        synth.speak(u);
+  /* Hands-free: say the phrase, leave a gap for you to repeat it, say it again, move on. */
+  var hf = null, wake = null;
+  function speakThen(text, cb) {
+    var fired = false, t = 0;
+    function fire() { if (fired) return; fired = true; clearTimeout(t); cb(); }
+    text = clean(text);
+    t = setTimeout(fire, 2500 + text.length * 220); /* some phones never report the end of speech */
+    try { var u = utter(text); u.onend = fire; u.onerror = fire; synth.speak(u); } catch (e) { fire(); }
+  }
+  function stopHandsFree() {
+    if (!hf) return;
+    clearTimeout(hf.timer); hf = null;
+    $("hf").hidden = true; setPlaying(false);
+    if (wake) { try { wake.release(); } catch (e) {} wake = null; }
+  }
+  function handsFree(list) {
+    stopAudio();
+    if (!synth || !list.length) return;
+    var run = hf = { timer: 0 }, i = 0;
+    setPlaying(true);
+    $("hf").hidden = false; $("hf").classList.remove("open");
+    if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (w) { if (hf === run) wake = w; else w.release(); }).catch(function () {});
+    function alive() { return hf === run; }
+    function status(text) { $("hfstatus").textContent = text; }
+    function step() {
+      if (!alive()) return;
+      if (i >= list.length) { stopHandsFree(); return; }
+      var p = list[i];
+      $("hfru").textContent = p.ru; $("hfsay").textContent = p.say; $("hfen").textContent = p.en;
+      $("hfcount").textContent = (i + 1) + " of " + list.length;
+      $("hf").classList.remove("open");
+      status("Listen");
+      speakThen(p.ru, function () {
+        if (!alive()) return;
+        status("Your turn");
+        run.timer = setTimeout(function () {
+          if (!alive()) return;
+          status("Once more");
+          speakThen(p.ru, function () {
+            if (!alive()) return;
+            run.timer = setTimeout(function () { i++; step(); }, 900);
+          });
+        }, 1800 + 500 * clean(p.ru).split(/\s+/).length);
       });
-    } catch (e) { setPlaying(false); }
+    }
+    step();
   }
   function listenBtn(text) {
     var b = h("button", { class: "act listen" });
@@ -228,10 +263,104 @@
     inTopic(topic).forEach(function (p) { box.append(phraseItem(p)); });
   }
   $("topic").addEventListener("change", function (e) { topic = e.target.value; save("rft.cat", topic); stopAudio(); renderPhrases(); });
-  $("playall").addEventListener("click", function () {
+  $("handsfree").addEventListener("click", function () {
     if (playing) { stopAudio(); return; }
-    playAll(inTopic(topic).map(function (p) { return p.ru; }));
+    handsFree(inTopic(topic));
   });
+  $("hfhelp").addEventListener("click", function () { $("hf").classList.toggle("open"); });
+
+  /* ---------- scenes: her family speaks, you answer out loud ---------- */
+  var SCENES = window.SCENES.map(function (sc) {
+    return { name: sc[0], lines: sc[1].split("\n").map(function (l) { var p = l.split("|"); return { who: p[0], ru: p[1], say: p[2], en: p[3] }; }) };
+  });
+  SCENES.forEach(function (sc, i) { $("scene").append(h("option", { value: String(i), text: sc.name })); });
+  var sceneRun = 0;
+  function scrollTo(el) { if (el.scrollIntoView) el.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+  function playScene(index) {
+    var sc = SCENES[index], pos = 0, run = ++sceneRun, chat = $("chat");
+    if (hearing) hearing.finish("replaced");
+    stopAudio(); chat.textContent = "";
+    $("scenestart").textContent = "Restart";
+    function next() {
+      if (run !== sceneRun) return;
+      if (pos >= sc.lines.length) {
+        var again = h("button", { class: "act primary", text: "Play it again" });
+        again.addEventListener("click", function () { playScene(index); });
+        var end = h("div", { class: "hint" }, h("div", { class: "ru", lang: "ru", text: "Молодец!" }), h("div", { class: "en", text: "Scene complete. Run it again until it feels automatic." }), h("div", { class: "acts" }, again));
+        chat.append(end); scrollTo(end);
+        return;
+      }
+      var line = sc.lines[pos++];
+      if (line.who === "T") {
+        var t = h("div", { class: "turn" });
+        var help = h("button", { class: "act helpbtn", text: "Help" });
+        help.addEventListener("click", function () { t.classList.toggle("open"); });
+        t.append(h("div", { class: "bubble them" },
+          h("div", { class: "who", text: "Her family" }),
+          h("div", { class: "ru", lang: "ru", text: line.ru }),
+          h("div", { class: "say aid", text: line.say }),
+          h("div", { class: "en aid", text: line.en }),
+          h("div", { class: "acts" }, listenBtn(line.ru), help)));
+        chat.append(t);
+        sayAloud(line.ru);
+        next();
+        return;
+      }
+      /* your reply: in Immersion the answer stays hidden until you ask for Help */
+      var y = h("div", { class: "turn" });
+      var verdict = h("div", { class: "verdict", hidden: "" });
+      function live(text) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; }
+      function advance() {
+        if (run !== sceneRun) return;
+        if (hearing && hearing.btn === mic) hearing.finish("replaced");
+        y.textContent = ""; y.append(h("div", { class: "bubble me", lang: "ru", text: line.ru }));
+        next();
+      }
+      var mic = h("button", { class: "act primary mic", text: "Say it" });
+      mic.addEventListener("click", function () {
+        hear(mic, line.ru, live, function (r) {
+          if (run !== sceneRun) return;
+          if (!r.heard) {
+            if (r.reason === "denied" || r.reason === "stopped" || r.reason === "replaced") { verdict.hidden = true; return; }
+            verdict.hidden = false; verdict.className = "verdict mid";
+            verdict.textContent = r.reason === "nostart" ? "The microphone did not start. Try again, or open this page in Safari." : "I did not hear anything. Tap Say it, wait for Speak now, then say it.";
+            return;
+          }
+          if (r.score >= 0.8) { advance(); return; }
+          y.classList.add("open");
+          verdict.hidden = false; verdict.className = "verdict mid"; verdict.textContent = "";
+          verdict.append(h("b", { text: r.score >= 0.5 ? "Close. " : "Not yet. " }), "I heard: " + r.heard + ". Tap Listen, then try again.");
+        });
+      });
+      var help2 = h("button", { class: "act helpbtn", text: "Help" });
+      help2.addEventListener("click", function () { y.classList.toggle("open"); });
+      var skip = h("button", { class: "act", text: "Next" });
+      skip.addEventListener("click", advance);
+      y.append(h("div", { class: "hint" },
+        h("div", { class: "who", text: "Your turn" }),
+        h("div", { class: "ru aid", lang: "ru", text: line.ru }),
+        h("div", { class: "say aid", text: line.say }),
+        h("div", { class: "en aid", text: line.en }),
+        h("div", { class: "acts" }, mic, listenBtn(line.ru), help2, skip),
+        verdict));
+      chat.append(y); scrollTo(y);
+    }
+    next();
+  }
+  $("scenestart").addEventListener("click", function () { playScene(Number($("scene").value) || 0); });
+  $("scene").addEventListener("change", function () { sceneRun++; stopAudio(); $("chat").textContent = ""; $("scenestart").textContent = "Start"; });
+
+  /* ---------- tabs ---------- */
+  function show(view) {
+    if (view !== "scenes") view = "phrases";
+    ["phrases", "scenes"].forEach(function (v) {
+      $("view-" + v).hidden = v !== view;
+      $("tab-" + v).setAttribute("aria-selected", String(v === view));
+    });
+    stopAudio();
+    save("rft.tab", view);
+  }
+  ["phrases", "scenes"].forEach(function (v) { $("tab-" + v).addEventListener("click", function () { show(v); }); });
 
   /* ---------- immersion ---------- */
   function setImmersion(on) {
@@ -244,6 +373,7 @@
 
   renderTopics(); renderPhrases(); renderCount();
   setImmersion(!!load("rft.immersed", false));
+  show(load("rft.tab", "phrases"));
 
   if ("serviceWorker" in navigator && location.protocol === "https:") {
     navigator.serviceWorker.register("sw.js").catch(function () {});

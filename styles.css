@@ -121,3 +121,7 @@ label.field { font-size: 14px; font-weight: 600; }
   .act.live::before { animation: pulse 1s ease-in-out infinite; }
   @keyframes pulse { 50% { opacity: .25; } }
 }
+.note a { color: var(--cobalt); }
+#hf .row { justify-content: space-between; }
+#hfstatus { color: var(--cobalt); }
+[hidden] { display: none !important; }

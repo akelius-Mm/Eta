@@ -24,23 +24,45 @@
   </header>
 
   <div class="top">
-    <a class="act" href="https://claude.ai/artifact/DKud315NwpPN6qCJRqBVQX" target="_blank" rel="noopener">Talk practice in Claude</a>
+    <div class="tabs" role="tablist" aria-label="Practice mode">
+      <button role="tab" id="tab-phrases" aria-selected="true">Phrases</button>
+      <button role="tab" id="tab-scenes" aria-selected="false">Scenes</button>
+    </div>
     <button class="switch" id="immerse" aria-pressed="false"><i></i>Immersion</button>
   </div>
   <p class="note" id="immnote" hidden>Immersion is on: Russian only. Tap Help on any line when you need the meaning.</p>
 
-  <section class="view">
+  <section class="view" id="view-phrases" aria-labelledby="tab-phrases">
     <div class="row">
       <select id="topic" aria-label="Topic"></select>
-      <button class="act listen" id="playall">Play all</button>
+      <button class="act listen" id="handsfree">Hands-free</button>
+    </div>
+    <div class="panel turn" id="hf" hidden>
+      <div class="row"><span class="who" id="hfstatus"></span><span class="who" id="hfcount"></span></div>
+      <div class="ru" lang="ru" id="hfru"></div>
+      <div class="say aid" id="hfsay"></div>
+      <div class="en aid" id="hfen"></div>
+      <div class="acts"><button class="act helpbtn" id="hfhelp">Help</button></div>
+      <p class="note">Listen, repeat in the gap, then hear it once more. Keep the screen on.</p>
     </div>
     <div class="progress"><span id="count"></span><div class="bar"><i id="barfill"></i></div></div>
     <p class="note" id="micnote" hidden></p>
     <div class="list" id="phrases"></div>
     <p class="note">Capital letters mark the stressed syllable: say it louder and longer. Everything uses the polite form (вы), which is right for parents and grandparents.</p>
   </section>
+
+  <section class="view" id="view-scenes" aria-labelledby="tab-scenes" hidden>
+    <p class="lead">Play out the visit. Her family speaks, then you answer out loud.</p>
+    <div class="row">
+      <select id="scene" aria-label="Scene"></select>
+      <button class="act primary" id="scenestart">Start</button>
+    </div>
+    <div class="chat" id="chat"></div>
+    <p class="note">For open conversation with coaching, use <a href="https://claude.ai/artifact/DKud315NwpPN6qCJRqBVQX" target="_blank" rel="noopener">Talk practice in Claude</a>.</p>
+  </section>
 </div>
 <script src="phrases.js"></script>
+<script src="scenes.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
