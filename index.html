@@ -28,8 +28,10 @@
       <button role="tab" id="tab-phrases" aria-selected="true">Phrases</button>
       <button role="tab" id="tab-scenes" aria-selected="false">Scenes</button>
       <button role="tab" id="tab-eta" aria-selected="false">Eta?</button>
+      <button role="tab" id="tab-kak" aria-selected="false">Kak?</button>
     </div>
     <button class="switch" id="immerse" aria-pressed="false"><i></i>Immersion</button>
+    <button class="switch" id="slow" aria-pressed="false"><i></i>Slow voice</button>
   </div>
   <p class="note" id="immnote" hidden>Immersion is on: Russian only. Tap Help on any line when you need the meaning.</p>
 
@@ -62,7 +64,7 @@
     <p class="note">For open conversation with coaching, use <a href="https://claude.ai/artifact/DKud315NwpPN6qCJRqBVQX" target="_blank" rel="noopener">Talk practice in Claude</a>.</p>
   </section>
   <section class="view" id="view-eta" aria-labelledby="tab-eta" hidden>
-    <p class="lead">Что это? means "What is this?" Name the picture: say it out loud or tap the right word.</p>
+    <p class="lead">Что это? means "What is this?" Say what the picture is. If you miss, four words appear to pick from.</p>
     <div class="row">
       <select id="etagroup" aria-label="Group of things"></select>
       <span class="score" id="etascore"></span>
@@ -70,8 +72,16 @@
     <div id="etacard"></div>
   </section>
 
-  <div class="settings"><button class="switch" id="slow" aria-pressed="false"><i></i>Slow voice</button></div>
-  <p class="note" id="version">Version 12</p>
+  <section class="view" id="view-kak" aria-labelledby="tab-kak" hidden>
+    <p class="lead">Как сказать? means "How do you say it?" You see the English and say it in Russian. No choices.</p>
+    <div class="row">
+      <select id="kakgroup" aria-label="Topic"></select>
+      <span class="score" id="kakscore"></span>
+    </div>
+    <div id="kakcard"></div>
+  </section>
+
+  <p class="note" id="version">Version 13</p>
 </div>
 <script src="phrases.js"></script>
 <script src="objects.js"></script>

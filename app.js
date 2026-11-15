@@ -473,7 +473,10 @@
     var verdict = h("div", { class: "verdict", hidden: "" });
     var reveal = h("div", { class: "reveal", hidden: "" },
       h("div", { class: "ru", lang: "ru", text: cur.ru }), h("div", { class: "say aid", text: cur.say }), h("div", { class: "en aid", text: cur.en }));
+    /* the four words stay hidden until you have tried saying it (or when this phone cannot listen) */
     var grid = h("div", { class: "choices" });
+    grid.hidden = !!SR && !app.classList.contains("no-mic");
+    function offerChoices() { if (!done) grid.hidden = false; }
     var mic = h("button", { class: "act primary mic", text: "Say it" });
     var help = h("button", { class: "act helpbtn", text: "Help" });
     help.addEventListener("click", function () { card.classList.toggle("open"); });
@@ -491,6 +494,7 @@
       });
       verdict.hidden = false; verdict.className = "verdict " + (ok ? "good" : "mid");
       verdict.textContent = ok ? "Да! Молодец!" : "This one will come back in a moment.";
+      grid.hidden = false;
       reveal.hidden = false; mic.hidden = true; show.hidden = true; next.hidden = false;
       if (ok) {
         eta.right++;
@@ -508,14 +512,16 @@
     mic.addEventListener("click", function () {
       hear(mic, cur.ru, live, function (r) {
         if (done || run !== eta.run) return;
+        if (r.reason === "replaced") return;
+        if (r.score >= 0.8) { answer(true); return; }
+        offerChoices();
         if (!r.heard) {
-          if (r.reason === "denied" || r.reason === "stopped" || r.reason === "replaced") { verdict.hidden = true; return; }
+          if (r.reason === "denied" || r.reason === "stopped") { verdict.hidden = true; return; }
           verdict.hidden = false; verdict.className = "verdict mid"; verdict.textContent = silentMsg(r);
           return;
         }
-        if (r.score >= 0.8) { answer(true); return; }
         verdict.hidden = false; verdict.className = "verdict mid"; verdict.textContent = "";
-        verdict.append(h("b", { text: "Not yet. " }), "I heard: " + r.heard + ". Try again, or tap an answer.");
+        verdict.append(h("b", { text: "Not yet. " }), "I heard: " + r.heard + ". Try again, or tap the right word.");
       });
     });
     show.addEventListener("click", function () { answer(false); });
@@ -526,19 +532,112 @@
   }
   $("etagroup").addEventListener("change", startEta);
 
+  /* ---------- Kak? : the English comes up, you say it in Russian. No choices. ---------- */
+  var SAME = {}; /* phrases that share one English meaning all count as right */
+  PHRASES.forEach(function (p) { var k = p.en.toLowerCase(); (SAME[k] = SAME[k] || []).push(p.ru); });
+  $("kakgroup").append(h("option", { value: "", text: "All phrases" }));
+  names.forEach(function (c) { $("kakgroup").append(h("option", { value: c, text: c.replace("Things: ", "") })); });
+  var kak = { pool: [], queue: [], right: 0, started: false, run: 0 };
+  function kakScore() { $("kakscore").textContent = kak.right + " of " + kak.pool.length + " said"; }
+  function startKak() {
+    var c = $("kakgroup").value;
+    kak.pool = PHRASES.filter(function (p) { return !c || p.c === c; });
+    kak.queue = shuffle(kak.pool.slice()); kak.right = 0; kak.started = true;
+    kakScore(); nextKak();
+  }
+  function nextKak() {
+    var run = ++kak.run, box = $("kakcard");
+    if (hearing) hearing.finish("replaced");
+    stopAudio(); box.textContent = "";
+    if (!kak.queue.length) {
+      var again = h("button", { class: "act primary", text: "Go again" });
+      again.addEventListener("click", startKak);
+      box.append(h("div", { class: "panel" }, h("div", { class: "ru", lang: "ru", text: "Молодец!" }),
+        h("div", { class: "en", text: "You said all " + kak.pool.length + ". Pick another topic or go again." }), h("div", { class: "acts" }, again)));
+      return;
+    }
+    var cur = kak.queue.shift(), done = false, alts = SAME[cur.en.toLowerCase()] || [cur.ru];
+    var card = h("div", { class: "panel", "data-answer": cur.ru });
+    var verdict = h("div", { class: "verdict", hidden: "" });
+    var blanks = h("div", { class: "blanks", lang: "ru", hidden: "" });
+    var reveal = h("div", { class: "reveal", hidden: "" }, h("div", { class: "ru", lang: "ru", text: cur.ru }), h("div", { class: "say", text: cur.say }));
+    var mic = h("button", { class: "act primary mic", text: "Say it" });
+    var show = h("button", { class: "act", text: "Show me" });
+    var knew = h("button", { class: "act", text: "I knew it", hidden: "" });
+    var next = h("button", { class: "act primary", text: "Next", hidden: "" });
+    next.addEventListener("click", nextKak);
+    function count(ok) {
+      if (ok) {
+        kak.right++;
+        if (!learned[cur.ru]) { learned[cur.ru] = 1; save("rft.learned", learned); renderCount(); renderTopics(); }
+      } else kak.queue.splice(Math.min(3, kak.queue.length), 0, cur);
+      kakScore();
+    }
+    function answer(ok) {
+      if (done || run !== kak.run) return;
+      done = true;
+      if (hearing && hearing.btn === mic) hearing.finish("replaced");
+      verdict.hidden = false; verdict.className = "verdict " + (ok ? "good" : "mid");
+      verdict.textContent = ok ? "Да! Молодец!" : "This one will come back in a moment.";
+      blanks.hidden = true; reveal.hidden = false; mic.hidden = true; show.hidden = true; next.hidden = false;
+      /* where the phone cannot listen, you judge yourself after seeing the answer */
+      if (!ok && (!SR || app.classList.contains("no-mic"))) {
+        knew.hidden = false;
+        knew.onclick = function () { knew.hidden = true; kak.queue.splice(kak.queue.indexOf(cur), 1); count(true); verdict.className = "verdict good"; verdict.textContent = "Молодец!"; };
+      }
+      count(ok);
+      sayAloud(cur.ru);
+    }
+    /* after a miss, show the sentence with the words you got and blanks for the rest */
+    function drawBlanks(heard) {
+      var got = norm(heard).split(" ").filter(Boolean);
+      blanks.textContent = cur.ru.split(/\s+/).map(function (w) {
+        var n = norm(w);
+        return !n || got.some(function (x) { return near(n, x); }) ? w : "___";
+      }).join(" ");
+      blanks.hidden = false;
+    }
+    function live(text) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; }
+    mic.addEventListener("click", function () {
+      hear(mic, cur.ru, live, function (r) {
+        if (done || run !== kak.run || r.reason === "replaced") return;
+        var top = r.score;
+        if (r.heard) alts.forEach(function (alt) { top = Math.max(top, score(alt, r.heard)); });
+        if (top >= 0.8) { answer(true); return; }
+        if (!r.heard) {
+          if (r.reason === "denied" || r.reason === "stopped") { verdict.hidden = true; return; }
+          verdict.hidden = false; verdict.className = "verdict mid"; verdict.textContent = silentMsg(r);
+          return;
+        }
+        drawBlanks(r.heard);
+        verdict.hidden = false; verdict.className = "verdict mid"; verdict.textContent = "";
+        verdict.append(h("b", { text: top >= 0.5 ? "Close. " : "Not yet. " }), "I heard: " + r.heard + ". Try again.");
+      });
+    });
+    show.addEventListener("click", function () { answer(false); });
+    card.append(h("div", { class: "etaask", lang: "ru", text: "Как сказать по-русски?" }));
+    if (cur.pic) card.append(h("div", { class: "pic kakpic", text: cur.pic }));
+    card.append(h("div", { class: "kaken", text: cur.en }), blanks, reveal, verdict,
+      h("div", { class: "acts" }, mic, show, knew, next));
+    box.append(card);
+  }
+  $("kakgroup").addEventListener("change", startKak);
+
   /* ---------- tabs ---------- */
+  var VIEWS = ["phrases", "scenes", "eta", "kak"];
   function show(view) {
-    if (view !== "scenes" && view !== "eta") view = "phrases";
-    ["phrases", "scenes", "eta"].forEach(function (v) {
+    if (VIEWS.indexOf(view) < 0) view = "phrases";
+    VIEWS.forEach(function (v) {
       $("view-" + v).hidden = v !== view;
       $("tab-" + v).setAttribute("aria-selected", String(v === view));
     });
     stopAudio();
     if (hearing) hearing.finish("replaced");
     if (view === "eta" && !eta.started) startEta();
+    if (view === "kak" && !kak.started) startKak();
     save("rft.tab", view);
   }
-  ["phrases", "scenes", "eta"].forEach(function (v) { $("tab-" + v).addEventListener("click", function () { show(v); }); });
+  VIEWS.forEach(function (v) { $("tab-" + v).addEventListener("click", function () { show(v); }); });
 
   /* ---------- immersion ---------- */
   function setImmersion(on) {

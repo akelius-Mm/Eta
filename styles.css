@@ -145,3 +145,9 @@ label.field { font-size: 14px; font-weight: 600; }
 .choice.right .ru { color: var(--good); }
 .choice.wrong { background: var(--warn-soft); border-color: var(--warn); }
 .choice:disabled { cursor: default; }
+.tabs { grid-template-columns: repeat(4, 1fr); flex: 1 1 100%; }
+.top { flex-wrap: wrap; }
+.top .switch { min-height: 42px; flex: 1; justify-content: center; }
+.kaken { font-size: 26px; line-height: 1.25; font-weight: 600; text-align: center; text-wrap: balance; }
+.kakpic { text-align: center; font-size: 56px; }
+.blanks { font-family: var(--font-ru); font-size: 21px; font-weight: 700; text-align: center; overflow-wrap: anywhere; }
