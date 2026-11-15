@@ -93,6 +93,7 @@
     var run = hf = { timer: 0 }, i = 0;
     setPlaying(true);
     $("hf").hidden = false; $("hf").classList.remove("open");
+    window.scrollTo(0, 0);
     if (navigator.wakeLock) navigator.wakeLock.request("screen").then(function (w) { if (hf === run) wake = w; else w.release(); }).catch(function () {});
     function alive() { return hf === run; }
     function status(text) { $("hfstatus").textContent = text; }
@@ -107,7 +108,7 @@
       var labels = ["Listen", "Again", "Once more"], k = 0;
       (function round() {
         if (!alive()) return;
-        status(labels[k]);
+        status(labels[k] + " · " + (k + 1) + " of 3");
         speakThen(p.ru, function () {
           if (!alive()) return;
           k++;
@@ -250,7 +251,10 @@
       : "I did not hear anything. Tap Say it, wait for Speak now, then say it.";
     return text + " (" + r.code + ")";
   }
-  var NUM = { "1": "один", "2": "два", "3": "три", "4": "четыре", "5": "пять", "6": "шесть", "7": "семь", "8": "восемь", "9": "девять", "10": "десять", "20": "двадцать", "100": "сто" };
+  var NUM = { "1": "один", "2": "два", "3": "три", "4": "четыре", "5": "пять", "6": "шесть", "7": "семь", "8": "восемь", "9": "девять", "10": "десять", "20": "двадцать", "100": "сто",
+    "0": "ноль", "11": "одиннадцать", "12": "двенадцать", "13": "тринадцать", "14": "четырнадцать", "15": "пятнадцать", "16": "шестнадцать",
+    "17": "семнадцать", "18": "восемнадцать", "19": "девятнадцать", "30": "тридцать", "40": "сорок", "50": "пятьдесят", "60": "шестьдесят",
+    "70": "семьдесят", "80": "восемьдесят", "90": "девяносто", "1000": "тысяча" };
   /* The phone often writes a spoken number as digits ("10"), so turn digits back into words before comparing. */
   function norm(s) { return String(s).toLowerCase().replace(/\d+/g, function (d) { return NUM[d] || d; }).replace(/ё/g, "е").replace(/[^a-zа-я\s]/g, " ").replace(/\s+/g, " ").trim(); }
   function near(a, b) {
@@ -435,7 +439,7 @@
       var skip = h("button", { class: "act", text: "Next" });
       skip.addEventListener("click", advance);
       y.append(h("div", { class: "hint" },
-        h("div", { class: "who", text: "Your turn" }),
+        h("div", { class: "who", text: "Your turn · " + Math.ceil(pos / 2) + " of " + Math.ceil(sc.lines.length / 2) }),
         ruEl,
         h("div", { class: "say aid", text: line.say }),
         h("div", { class: "en aid", text: line.en }),
@@ -504,8 +508,9 @@
         else if (b === picked) b.classList.add("wrong");
       });
       verdict.hidden = false; verdict.className = "verdict " + (ok ? "good" : "mid");
-      verdict.textContent = ok ? "Да! Молодец!" : "This one will come back in a moment.";
-      grid.hidden = false;
+      verdict.textContent = ok ? "Да! Молодец!"
+        : (picked ? "You picked " + picked.getAttribute("data-ru") + ". " : "") + "This one will come back in a moment.";
+      grid.hidden = true;
       reveal.hidden = false; mic.hidden = true; show.hidden = true; next.hidden = false;
       if (ok) {
         eta.right++;
@@ -554,7 +559,7 @@
   function kakScore() { $("kakscore").textContent = kak.right + " of " + kak.pool.length + " said"; }
   function startKak() {
     var c = $("kakgroup").value;
-    kak.pool = PHRASES.filter(function (p) { return !c || p.c === c; });
+    kak.pool = PHRASES.filter(function (p) { return (!c || p.c === c) && norm(p.ru).length > 1; });
     kak.queue = shuffle(kak.pool.slice()); kak.right = 0; kak.started = true;
     kakScore(); nextKak();
   }
@@ -646,6 +651,7 @@
     });
     stopAudio();
     if (hearing) hearing.finish("replaced");
+    window.scrollTo(0, 0);
     if (view === "eta" && !eta.started) startEta();
     if (view === "kak" && !kak.started) startKak();
     save("rft.tab", view);
@@ -663,6 +669,13 @@
 
   renderTopics(); renderPhrases(); renderCount();
   setImmersion(!!load("rft.immersed", false));
+  $("reset").addEventListener("click", function () {
+    if (!window.confirm("Clear everything you have marked as learned?")) return;
+    learned = {}; save("rft.learned", learned);
+    renderTopics(); renderPhrases(); renderCount();
+    if (eta.started) startEta();
+    if (kak.started) startKak();
+  });
   function setSlow(on) { slow = on; $("slow").setAttribute("aria-pressed", String(on)); save("rft.slow", on); }
   $("slow").addEventListener("click", function () { setSlow(!slow); });
   setSlow(slow);

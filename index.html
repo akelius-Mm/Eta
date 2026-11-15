@@ -20,16 +20,17 @@
 <div class="wrap no-mic" id="app">
   <header>
     <h1><span class="flag" role="img" aria-label="Russian flag"></span>Здравствуйте!</h1>
-    <p>Russian for meeting her mom and grandparents.</p>
   </header>
 
-  <div class="top">
+  <div class="tabbar">
     <div class="tabs" role="tablist" aria-label="Practice mode">
       <button role="tab" id="tab-phrases" aria-selected="true">Phrases</button>
       <button role="tab" id="tab-scenes" aria-selected="false">Scenes</button>
       <button role="tab" id="tab-eta" aria-selected="false">Eta?</button>
       <button role="tab" id="tab-kak" aria-selected="false">Kak?</button>
     </div>
+  </div>
+  <div class="top">
     <button class="switch" id="immerse" aria-pressed="false"><i></i>Immersion</button>
     <button class="switch" id="slow" aria-pressed="false"><i></i>Slow voice</button>
   </div>
@@ -81,7 +82,7 @@
     <div id="kakcard"></div>
   </section>
 
-  <p class="note" id="version">Version 14</p>
+  <div class="foot"><span class="note" id="version">Version 15</span><button class="linkbtn" id="reset">Reset progress</button></div>
 </div>
 <script src="phrases.js"></script>
 <script src="objects.js"></script>

@@ -502,6 +502,50 @@ window.TOPICS = [
 Чёрный кофе.|CHOR-ny KOH-fye|Black coffee
 Красное вино.|KRAS-na-ye vee-NOH|Red wine
 Белое вино.|BYE-la-ye vee-NOH|White wine`],
+["Building blocks", `Я хочу …|ya kha-CHOO …|I want …
+Я хочу чай.|ya kha-CHOO chai|I want tea
+Я хочу помочь.|ya kha-CHOO pa-MOCH|I want to help
+Я не хочу.|ya nye kha-CHOO|I don't want to
+Я могу …|ya ma-GOO …|I can …
+Я могу помочь.|ya ma-GOO pa-MOCH|I can help
+Я не могу.|ya nye ma-GOO|I can't
+Мне нужно …|mnye NOOZH-na …|I need to …
+Мне нужно позвонить.|mnye NOOZH-na pa-zva-NEET|I need to make a call
+Можно …?|MOZH-na …|May I …?
+Можно сесть?|MOZH-na syest|May I sit?
+Давайте …|da-VAY-tye …|Let's …
+Давайте поедим.|da-VAY-tye pa-ye-DEEM|Let's eat
+У меня есть …|oo mee-NYA yest …|I have …
+У меня нет …|oo mee-NYA nyet …|I don't have …
+Это …|EH-ta …|This is …
+Где …?|gdye …|Where is …?
+Я буду …|ya BOO-doo …|I'll have … (choosing food or drink)
+Я буду чай.|ya BOO-doo chai|I'll have tea
+Вы хотите …?|vy kha-TEE-tye …|Do you want …?
+Я думаю, что …|ya DOO-ma-yoo, shtoh …|I think that …
+Потому что …|pa-ta-MOO shta …|Because …`],
+["Everyday verbs", `есть|yest|to eat
+пить|peet|to drink
+спать|spat|to sleep
+идти|eet-TEE|to go (on foot)
+ехать|YE-khat|to go (by car, bus or train)
+говорить|ga-va-REET|to speak
+слушать|SLOO-shat|to listen
+смотреть|sma-TRYET|to watch / to look
+читать|chee-TAT|to read
+писать|pee-SAT|to write
+работать|ra-BOH-tat|to work
+отдыхать|ad-dy-KHAT|to rest
+готовить|ga-TOH-veet|to cook
+помогать|pa-ma-GAT|to help
+любить|lyoo-BEET|to love
+знать|znat|to know
+понимать|pa-nee-MAT|to understand
+думать|DOO-mat|to think
+жить|zheet|to live
+играть|eeg-RAT|to play
+покупать|pa-koo-PAT|to buy
+ждать|zhdat|to wait`],
 ["Little words", `я|ya|I
 вы|vy|you (polite)
 он|on|he
@@ -557,6 +601,26 @@ window.TOPICS = [
 вечер|VYE-cher|evening
 ночь|noch|night
 Который час?|ka-TOH-ry chas|What time is it?`],
+["More numbers", `ноль|nol|zero
+одиннадцать|a-DEE-na-tsat|eleven
+двенадцать|dvee-NA-tsat|twelve
+тринадцать|tree-NA-tsat|thirteen
+четырнадцать|chee-TYR-na-tsat|fourteen
+пятнадцать|peet-NA-tsat|fifteen
+шестнадцать|shees-NA-tsat|sixteen
+семнадцать|seem-NA-tsat|seventeen
+восемнадцать|va-seem-NA-tsat|eighteen
+девятнадцать|dee-veet-NA-tsat|nineteen
+тридцать|TREE-tsat|thirty
+сорок|SOH-rak|forty
+пятьдесят|pee-dee-SYAT|fifty
+шестьдесят|shees-dee-SYAT|sixty
+семьдесят|SYEM-dee-seet|seventy
+восемьдесят|VOH-seem-dee-seet|eighty
+девяносто|dee-vee-NOS-ta|ninety
+тысяча|TY-see-cha|one thousand
+первый|PYER-vy|first
+второй|fta-ROY|second`],
 ["Goodbye", `До свидания!|da svee-DA-nee-ya|Goodbye
 До встречи!|da FSTRYE-chee|See you again
 До скорой встречи!|da SKOH-ray FSTRYE-chee|See you soon

@@ -8,7 +8,7 @@ T|Очень приятно.|OH-chen pree-YAHT-na|Nice to meet you.
 Y|Очень приятно.|OH-chen pree-YAHT-na|Nice to meet you.
 T|Проходите!|pra-kha-DEE-tye|Come in!
 Y|Спасибо!|spa-SEE-ba|Thank you!`],
-["Yes, please and no, thank you", `T|Хотите чаю?|kha-TEE-tye CHA-yoo|Would you like some tea?
+["Yes please, no thank you", `T|Хотите чаю?|kha-TEE-tye CHA-yoo|Would you like some tea?
 Y|Да, пожалуйста.|da, pa-ZHAH-loos-ta|Yes, please.
 T|С сахаром?|s SA-kha-ram|With sugar?
 Y|Нет, спасибо.|nyet, spa-SEE-ba|No, thank you.
@@ -26,7 +26,7 @@ T|Вот чай.|vot chai|Here is the tea.
 Y|Большое спасибо!|bal-SHOH-ye spa-SEE-ba|Thank you very much!
 T|Не за что.|NYE-za-shta|Don't mention it.
 Y|Вы очень добры.|vy OH-chen dab-RY|You are very kind.`],
-["Your name and where you are from", `T|Как вас зовут?|kak vas za-VOOT|What is your name?
+["Your name and country", `T|Как вас зовут?|kak vas za-VOOT|What is your name?
 Y|Меня зовут …|mee-NYA za-VOOT …|My name is … (add your name)
 T|Очень приятно!|OH-chen pree-YAHT-na|Nice to meet you!
 Y|Очень приятно.|OH-chen pree-YAHT-na|Nice to meet you.
@@ -166,7 +166,7 @@ T|Кто вас учит?|ktoh vas OO-cheet|Who teaches you?
 Y|Она учит меня русскому.|a-NA OO-cheet mee-NYA ROOS-ka-moo|She is teaching me Russian.
 T|Говорите со мной по-русски.|ga-va-REE-tye sa mnoy pa-ROOS-kee|Speak Russian with me.
 Y|Поправляйте меня, пожалуйста.|pa-prav-LYAY-tye mee-NYA, pa-ZHAH-loos-ta|Please correct me.`],
-["Small talk about the weather", `T|Какая сегодня погода?|ka-KA-ya see-VOD-nya pa-GOH-da|What's the weather like today?
+["Weather small talk", `T|Какая сегодня погода?|ka-KA-ya see-VOD-nya pa-GOH-da|What's the weather like today?
 Y|Сегодня холодно.|see-VOD-nya KHOH-lad-na|It's cold today.
 T|Да, идёт снег.|da, ee-DYOT snyek|Yes, it's snowing.
 Y|Как красиво!|kak kra-SEE-va|How beautiful!
@@ -196,7 +196,7 @@ T|Приезжайте летом!|pree-yezh-ZHAY-tye LYE-tam|Come in the summer
 Y|Обязательно!|a-bee-ZA-teel-na|Definitely!
 T|Пойдёмте пить чай.|pay-DYOM-tye peet chai|Let's go have tea.
 Y|Давайте!|da-VAY-tye|Let's!`],
-["Looking after grandmother", `T|Ох, я устала.|okh, ya oos-TA-la|Oh, I'm tired.
+["Caring for grandmother", `T|Ох, я устала.|okh, ya oos-TA-la|Oh, I'm tired.
 Y|Садитесь сюда.|sa-DEE-tyes syoo-DA|Sit here.
 T|Спасибо вам.|spa-SEE-ba vam|Thank you.
 Y|Принести воды?|pree-nees-TEE va-DY|Shall I bring water?
