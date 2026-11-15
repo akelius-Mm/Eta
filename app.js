@@ -124,18 +124,20 @@
       hearing.finish(same ? "stopped" : "replaced");
       if (same) return;
     }
+    /* The phone cannot play a voice and listen at the same moment: if it is still talking, stop it and
+       give it a beat to hand the microphone over, otherwise the first words are lost. */
+    var wasTalking = !!(synth && synth.speaking);
     stopAudio();
-    var rec = new SR();
-    rec.lang = "ru-RU"; rec.interimResults = true; rec.maxAlternatives = 3;
-    rec.continuous = true; /* keep listening through pauses while you think of the next word */
-    var words = norm(target).split(" ").length, prior = "", restarts = 0;
-    var label = btn.textContent, best = "", top = 0, heard = "", quiet = 0, limit = 0, started = false, over = false, why = "";
+    var rec = null, label = btn.textContent, words = norm(target).split(" ").length;
+    var best = "", top = 0, heard = "", prior = "", why = "";
+    var quiet = 0, limit = 0, opening = 0, deaf = 0, started = false, over = false, restarts = 0;
+    var seen = { start: 0, audio: 0, voice: 0, result: 0 };
     function finish(reason) {
       if (over) return;
       over = true;
-      clearTimeout(quiet); clearTimeout(limit); clearTimeout(opening);
+      clearTimeout(quiet); clearTimeout(limit); clearTimeout(opening); clearTimeout(deaf);
       if (hearing === me) hearing = null;
-      try { rec.abort(); } catch (e) {}
+      try { if (rec) rec.abort(); } catch (e) {}
       btn.textContent = label; btn.classList.remove("live");
       if (reason === "not-allowed" || reason === "service-not-allowed") {
         reason = "denied";
@@ -143,45 +145,75 @@
         $("micnote").hidden = false;
         $("micnote").textContent = "The microphone is blocked for this app. Allow it in your browser settings, then reload.";
       }
-      done({ heard: best || heard, score: top, reason: reason });
+      done({ heard: best || heard, score: top, reason: reason,
+        code: "s" + seen.start + " a" + seen.audio + " v" + seen.voice + " r" + seen.result + " x" + restarts + (why ? " " + why : "") });
     }
     var me = hearing = { btn: btn, finish: finish };
     btn.textContent = "Starting…"; btn.classList.add("live");
     live("Getting the microphone ready…");
-    limit = setTimeout(function () { finish("silence"); }, Math.min(30000, 12000 + 1500 * words));
-    var opening = setTimeout(function () { if (!started) finish("nostart"); }, 9000);
+    limit = setTimeout(function () { finish(heard ? "silence" : "deaf"); }, Math.min(30000, 12000 + 1500 * words));
+    opening = setTimeout(function () { if (!started) finish("nostart"); }, 9000);
     function ready() {
       if (started || over) return;
       started = true; btn.textContent = "Speak now"; live("Speak now… take your time.");
+      watch();
     }
-    rec.onstart = ready; rec.onaudiostart = ready;
-    rec.onresult = function (e) {
-      if (over) return;
-      ready();
-      var joined = "", cands = [];
-      for (var i = 0; i < e.results.length; i++) {
-        joined += e.results[i][0].transcript + " ";
-        for (var j = 0; j < e.results[i].length; j++) cands.push(e.results[i][j].transcript);
-      }
-      heard = (prior + " " + joined).trim();
-      cands = cands.map(function (c) { return (prior + " " + c).trim(); }); cands.push(heard);
-      cands.forEach(function (c) { var x = score(target, c); if (x > top) { top = x; best = c; } });
-      if (heard) live("Hearing: " + heard);
-      if (top >= 1) { finish("match"); return; }
-      clearTimeout(quiet);
-      /* a long pause ends the attempt: 4 seconds mid-sentence, less for a single word or once it already matches */
-      quiet = setTimeout(function () { finish(top >= 0.8 ? "match" : "quiet"); }, top >= 0.8 ? 800 : words > 1 ? 4000 : 2500);
-    };
-    rec.onerror = function (e) { why = e.error; };
-    rec.onend = function () {
-      /* the phone sometimes stops listening at a pause; if you were mid-sentence, pick up where it left off */
-      if (!over && heard && top < 0.8 && restarts < 3) {
-        restarts++; prior = heard;
-        try { rec.start(); return; } catch (e) {}
-      }
-      finish(restarts ? "end" : why || "end");
-    };
-    try { rec.start(); } catch (e) { finish("nostart"); }
+    /* Listening but nothing at all coming through: start a fresh listener once, then say so. */
+    function watch() {
+      clearTimeout(deaf);
+      deaf = setTimeout(function () {
+        if (over || seen.result) return;
+        if (restarts < 1) { restarts++; live("Still listening… say it again."); reopen(); watch(); }
+        else finish("deaf");
+      }, 6000);
+    }
+    function reopen() { try { rec.abort(); } catch (e) {} why = ""; open(); }
+    function open() {
+      var r = rec = new SR();
+      r.lang = "ru-RU"; r.interimResults = true; r.maxAlternatives = 3;
+      r.continuous = true; /* keep listening through pauses while you think of the next word */
+      /* "Speak now" waits until the microphone is really capturing, not just requested */
+      r.onstart = function () { if (r !== rec) return; seen.start++; setTimeout(ready, 1200); };
+      r.onaudiostart = function () { if (r !== rec) return; seen.audio++; ready(); };
+      r.onsoundstart = r.onspeechstart = function () {
+        if (r !== rec || over) return;
+        seen.voice++; ready();
+        if (!heard) live("I hear you…");
+      };
+      r.onresult = function (e) {
+        if (r !== rec || over) return;
+        seen.result++; ready(); clearTimeout(deaf);
+        var joined = "", cands = [];
+        for (var i = 0; i < e.results.length; i++) {
+          joined += e.results[i][0].transcript + " ";
+          for (var j = 0; j < e.results[i].length; j++) cands.push(e.results[i][j].transcript);
+        }
+        heard = (prior + " " + joined).trim();
+        cands = cands.map(function (c) { return (prior + " " + c).trim(); }); cands.push(heard);
+        cands.forEach(function (c) { var x = score(target, c); if (x > top) { top = x; best = c; } });
+        if (heard) live("Hearing: " + heard);
+        if (top >= 1) { finish("match"); return; }
+        clearTimeout(quiet);
+        /* a long pause ends the attempt: 4 seconds mid-sentence, less for a single word or once it already matches */
+        quiet = setTimeout(function () { finish(top >= 0.8 ? "match" : "quiet"); }, top >= 0.8 ? 800 : words > 1 ? 4000 : 2500);
+      };
+      r.onerror = function (e) { if (r === rec) why = e.error; };
+      r.onend = function () {
+        if (r !== rec || over) return;
+        /* the phone sometimes stops listening at a pause; if you were mid-sentence, pick up where it left off */
+        if (heard && top < 0.8 && restarts < 3) { restarts++; prior = heard; reopen(); return; }
+        finish(why || "end");
+      };
+      try { r.start(); } catch (e) { finish("nostart"); }
+    }
+    if (wasTalking) setTimeout(function () { if (!over) open(); }, 350); else open();
+  }
+  /* What to tell you when an attempt ends with nothing heard. The short code helps diagnose it from a screenshot. */
+  function silentMsg(r) {
+    var text = r.reason === "nostart" ? "The microphone did not start. Try again, or open this page in Safari."
+      : r.reason === "deaf" ? "The phone is listening but not picking up your voice. Wait for the beep, then speak a little louder and closer. If it keeps happening, close the app and open it again."
+      : "I did not hear anything. Tap Say it, wait for Speak now, then say it.";
+    return text + " (" + r.code + ")";
   }
   var NUM = { "1": "один", "2": "два", "3": "три", "4": "четыре", "5": "пять", "6": "шесть", "7": "семь", "8": "восемь", "9": "девять", "10": "десять", "20": "двадцать", "100": "сто" };
   /* The phone often writes a spoken number as digits ("10"), so turn digits back into words before comparing. */
@@ -251,17 +283,15 @@
         if (!r.heard) {
           if (r.reason === "denied" || r.reason === "stopped" || r.reason === "replaced") { verdict.hidden = true; return; }
           verdict.hidden = false; verdict.className = "verdict mid";
-          verdict.textContent = r.reason === "nostart"
-            ? "The microphone did not start. Try again, or open this page in Safari."
-            : "I did not hear anything. Tap Say it, wait for Speak now, then say it.";
+          verdict.textContent = silentMsg(r);
           return;
         }
         var s = r.score;
         verdict.hidden = false; verdict.textContent = "";
         verdict.className = "verdict " + (s >= 0.8 ? "good" : "mid");
-        /* Spoken Russian feedback once the microphone is released: praise on a match, "once more" on a miss. */
-        var word = s >= 0.8 ? PRAISE[Math.floor(Math.random() * PRAISE.length)] : ["Ещё раз!", "Once more"];
-        setTimeout(function () { sayAloud(word[0]); }, 350);
+        /* Spoken Russian praise on a match, once the microphone is released. A miss stays silent so you can retry at once. */
+        var word = PRAISE[Math.floor(Math.random() * PRAISE.length)];
+        if (s >= 0.8) setTimeout(function () { if (!hearing) sayAloud(word[0]); }, 350);
         verdict.append(h("b", { text: s >= 0.8 ? word[0] + " " + word[1] + ". " : s >= 0.5 ? "Close. " : "Not yet. " }),
           "I heard: " + r.heard + (s >= 0.8 ? "" : ". Tap Listen, then try again."));
         if (s >= 0.8 && !learned[p.ru]) mark(p, item, got, true);
@@ -339,7 +369,7 @@
           if (!r.heard) {
             if (r.reason === "denied" || r.reason === "stopped" || r.reason === "replaced") { verdict.hidden = true; return; }
             verdict.hidden = false; verdict.className = "verdict mid";
-            verdict.textContent = r.reason === "nostart" ? "The microphone did not start. Try again, or open this page in Safari." : "I did not hear anything. Tap Say it, wait for Speak now, then say it.";
+            verdict.textContent = silentMsg(r);
             return;
           }
           if (r.score >= 0.8) { advance(); return; }
