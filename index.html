@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Russian Family Table</title>
+<meta name="description" content="Russian phrases for meeting her mom and grandparents.">
+<meta name="theme-color" content="#F3F5FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1322" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Russian">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=PT+Serif:wght@400;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body style="margin:0">
+<div class="wrap no-mic" id="app">
+  <header>
+    <h1><span class="flag" role="img" aria-label="Russian flag"></span>Здравствуйте!</h1>
+    <p>Russian for meeting her mom and grandparents.</p>
+  </header>
+
+  <div class="top">
+    <a class="act" href="https://claude.ai/artifact/DKud315NwpPN6qCJRqBVQX" target="_blank" rel="noopener">Talk practice in Claude</a>
+    <button class="switch" id="immerse" aria-pressed="false"><i></i>Immersion</button>
+  </div>
+  <p class="note" id="immnote" hidden>Immersion is on: Russian only. Tap Help on any line when you need the meaning.</p>
+
+  <section class="view">
+    <div class="row">
+      <select id="topic" aria-label="Topic"></select>
+      <button class="act listen" id="playall">Play all</button>
+    </div>
+    <div class="progress"><span id="count"></span><div class="bar"><i id="barfill"></i></div></div>
+    <p class="note" id="micnote" hidden></p>
+    <div class="list" id="phrases"></div>
+    <p class="note">Capital letters mark the stressed syllable: say it louder and longer. Everything uses the polite form (вы), which is right for parents and grandparents.</p>
+  </section>
+</div>
+<script src="phrases.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
