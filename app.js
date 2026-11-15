@@ -376,6 +376,11 @@
   show(load("rft.tab", "phrases"));
 
   if ("serviceWorker" in navigator && location.protocol === "https:") {
-    navigator.serviceWorker.register("sw.js").catch(function () {});
+    /* When a newer version of the app takes over, reload once so it shows up without closing the app. */
+    var had = !!navigator.serviceWorker.controller, reloaded = false;
+    navigator.serviceWorker.addEventListener("controllerchange", function () {
+      if (had && !reloaded) { reloaded = true; location.reload(); }
+    });
+    navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(function (r) { return r.update(); }).catch(function () {});
   }
 })();
