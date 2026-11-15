@@ -27,6 +27,7 @@
     <div class="tabs" role="tablist" aria-label="Practice mode">
       <button role="tab" id="tab-phrases" aria-selected="true">Phrases</button>
       <button role="tab" id="tab-scenes" aria-selected="false">Scenes</button>
+      <button role="tab" id="tab-eta" aria-selected="false">Eta?</button>
     </div>
     <button class="switch" id="immerse" aria-pressed="false"><i></i>Immersion</button>
   </div>
@@ -43,7 +44,7 @@
       <div class="say aid" id="hfsay"></div>
       <div class="en aid" id="hfen"></div>
       <div class="acts"><button class="act helpbtn" id="hfhelp">Help</button></div>
-      <p class="note">Listen, repeat in the gap, then hear it once more. Keep the screen on.</p>
+      <p class="note">Each phrase is said three times. Repeat it in the gaps. Keep the screen on.</p>
     </div>
     <div class="progress"><span id="count"></span><div class="bar"><i id="barfill"></i></div></div>
     <p class="note" id="micnote" hidden></p>
@@ -60,10 +61,20 @@
     <div class="chat" id="chat"></div>
     <p class="note">For open conversation with coaching, use <a href="https://claude.ai/artifact/DKud315NwpPN6qCJRqBVQX" target="_blank" rel="noopener">Talk practice in Claude</a>.</p>
   </section>
+  <section class="view" id="view-eta" aria-labelledby="tab-eta" hidden>
+    <p class="lead">Что это? means "What is this?" Name the picture: say it out loud or tap the right word.</p>
+    <div class="row">
+      <select id="etagroup" aria-label="Group of things"></select>
+      <span class="score" id="etascore"></span>
+    </div>
+    <div id="etacard"></div>
+  </section>
+
   <div class="settings"><button class="switch" id="slow" aria-pressed="false"><i></i>Slow voice</button></div>
-  <p class="note" id="version">Version 11</p>
+  <p class="note" id="version">Version 12</p>
 </div>
 <script src="phrases.js"></script>
+<script src="objects.js"></script>
 <script src="scenes.js"></script>
 <script src="app.js"></script>
 </body>

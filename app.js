@@ -9,6 +9,16 @@
     });
   });
 
+  var THINGS = [];
+  window.OBJECTS.forEach(function (g) {
+    g[1].split("\n").forEach(function (line) {
+      var p = line.split("|");
+      if (p.length !== 4) return;
+      var o = { g: g[0], c: "Things: " + g[0].toLowerCase(), pic: p[0], ru: p[1], say: p[2], en: p[3] };
+      THINGS.push(o); PHRASES.push(o);
+    });
+  });
+
   var $ = function (id) { return document.getElementById(id); };
   var app = $("app");
   function h(tag, props) {
@@ -82,19 +92,19 @@
       $("hfru").textContent = p.ru; $("hfsay").textContent = p.say; $("hfen").textContent = p.en;
       $("hfcount").textContent = (i + 1) + " of " + list.length;
       $("hf").classList.remove("open");
-      status("Listen");
-      speakThen(p.ru, function () {
+      /* said three times, with a gap after the first two for you to repeat it */
+      var labels = ["Listen", "Again", "Once more"], k = 0;
+      (function round() {
         if (!alive()) return;
-        status("Your turn");
-        run.timer = setTimeout(function () {
+        status(labels[k]);
+        speakThen(p.ru, function () {
           if (!alive()) return;
-          status("Once more");
-          speakThen(p.ru, function () {
-            if (!alive()) return;
-            run.timer = setTimeout(function () { i++; step(); }, 900);
-          });
-        }, 1800 + 500 * clean(p.ru).split(/\s+/).length);
-      });
+          k++;
+          if (k >= labels.length) { run.timer = setTimeout(function () { i++; step(); }, 900); return; }
+          status("Your turn");
+          run.timer = setTimeout(round, 1800 + 500 * clean(p.ru).split(/\s+/).length);
+        });
+      })();
     }
     step();
   }
@@ -253,7 +263,8 @@
 
   /* ---------- phrases ---------- */
   var learned = load("rft.learned", {});
-  var names = window.TOPICS.map(function (t) { return t[0]; });
+  var names = [];
+  PHRASES.forEach(function (p) { if (names.indexOf(p.c) < 0) names.push(p.c); });
   var topic = load("rft.cat", names[0]);
   if (names.indexOf(topic) < 0) topic = names[0];
   function inTopic(c) { return PHRASES.filter(function (p) { return p.c === c; }); }
@@ -261,12 +272,14 @@
 
   function renderTopics() {
     var sel = $("topic"); sel.textContent = "";
+    var talk = h("optgroup", { label: "Conversation" }), things = h("optgroup", { label: "Things" });
     names.forEach(function (c) {
       var list = inTopic(c);
-      var o = h("option", { value: c, text: c + "  ·  " + known(list) + "/" + list.length });
+      var o = h("option", { value: c, text: c.replace("Things: ", "") + "  ·  " + known(list) + "/" + list.length });
       if (c === topic) o.selected = true;
-      sel.append(o);
+      (c.indexOf("Things: ") === 0 ? things : talk).append(o);
     });
+    sel.append(talk, things);
   }
   function renderCount() {
     var n = known(PHRASES);
@@ -293,6 +306,7 @@
     var mic = h("button", { class: "act mic", text: "Say it" });
     var ruEl = item.querySelector(".ru");
     wordSpans(ruEl, p.ru);
+    if (p.pic) item.insertBefore(h("div", { class: "pic", text: p.pic }), item.firstChild);
     function live(text, heard) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; paint(ruEl, heard); }
     mic.addEventListener("click", function () {
       paint(ruEl, "");
@@ -423,17 +437,108 @@
   $("scenestart").addEventListener("click", function () { playScene(Number($("scene").value) || 0); });
   $("scene").addEventListener("change", function () { sceneRun++; stopAudio(); $("chat").textContent = ""; $("scenestart").textContent = "Start"; });
 
+  /* ---------- Eta? : a picture comes up, you name it in Russian ---------- */
+  function shuffle(list) {
+    for (var i = list.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = list[i]; list[i] = list[j]; list[j] = t; }
+    return list;
+  }
+  var etaGroups = [];
+  THINGS.forEach(function (o) { if (etaGroups.indexOf(o.g) < 0) etaGroups.push(o.g); });
+  $("etagroup").append(h("option", { value: "", text: "All things" }));
+  etaGroups.forEach(function (g) { $("etagroup").append(h("option", { value: g, text: g })); });
+  var eta = { pool: [], queue: [], right: 0, started: false, run: 0 };
+  function etaScore() { $("etascore").textContent = eta.right + " of " + eta.pool.length + " named"; }
+  function startEta() {
+    var g = $("etagroup").value;
+    eta.pool = THINGS.filter(function (o) { return !g || o.g === g; });
+    eta.queue = shuffle(eta.pool.slice()); eta.right = 0; eta.started = true;
+    etaScore(); nextEta();
+  }
+  function nextEta() {
+    var run = ++eta.run, box = $("etacard");
+    if (hearing) hearing.finish("replaced");
+    stopAudio(); box.textContent = "";
+    if (!eta.queue.length) {
+      var again = h("button", { class: "act primary", text: "Go again" });
+      again.addEventListener("click", startEta);
+      box.append(h("div", { class: "panel" }, h("div", { class: "ru", lang: "ru", text: "Молодец!" }),
+        h("div", { class: "en", text: "You named all " + eta.pool.length + ". Pick another group or go again." }), h("div", { class: "acts" }, again)));
+      return;
+    }
+    var cur = eta.queue.shift(), done = false;
+    var others = shuffle(eta.pool.filter(function (o) { return o.ru !== cur.ru; }));
+    if (others.length < 3) others = shuffle(THINGS.filter(function (o) { return o.ru !== cur.ru; }));
+    var opts = shuffle([cur].concat(others.slice(0, 3)));
+    var card = h("div", { class: "panel turn", "data-answer": cur.ru });
+    var verdict = h("div", { class: "verdict", hidden: "" });
+    var reveal = h("div", { class: "reveal", hidden: "" },
+      h("div", { class: "ru", lang: "ru", text: cur.ru }), h("div", { class: "say aid", text: cur.say }), h("div", { class: "en aid", text: cur.en }));
+    var grid = h("div", { class: "choices" });
+    var mic = h("button", { class: "act primary mic", text: "Say it" });
+    var help = h("button", { class: "act helpbtn", text: "Help" });
+    help.addEventListener("click", function () { card.classList.toggle("open"); });
+    var show = h("button", { class: "act", text: "Show me" });
+    var next = h("button", { class: "act primary", text: "Next", hidden: "" });
+    next.addEventListener("click", nextEta);
+    function answer(ok, picked) {
+      if (done || run !== eta.run) return;
+      done = true;
+      if (hearing && hearing.btn === mic) hearing.finish("replaced");
+      Array.prototype.forEach.call(grid.children, function (b) {
+        b.disabled = true;
+        if (b.getAttribute("data-ru") === cur.ru) b.classList.add("right");
+        else if (b === picked) b.classList.add("wrong");
+      });
+      verdict.hidden = false; verdict.className = "verdict " + (ok ? "good" : "mid");
+      verdict.textContent = ok ? "Да! Молодец!" : "This one will come back in a moment.";
+      reveal.hidden = false; mic.hidden = true; show.hidden = true; next.hidden = false;
+      if (ok) {
+        eta.right++;
+        if (!learned[cur.ru]) { learned[cur.ru] = 1; save("rft.learned", learned); renderCount(); renderTopics(); }
+      } else eta.queue.splice(Math.min(3, eta.queue.length), 0, cur);
+      etaScore();
+      sayAloud(cur.ru);
+    }
+    opts.forEach(function (o) {
+      var b = h("button", { class: "choice", "data-ru": o.ru }, h("span", { class: "ru", lang: "ru", text: o.ru }), h("span", { class: "say aid", text: o.say }));
+      b.addEventListener("click", function () { answer(o.ru === cur.ru, b); });
+      grid.append(b);
+    });
+    function live(text) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; }
+    mic.addEventListener("click", function () {
+      hear(mic, cur.ru, live, function (r) {
+        if (done || run !== eta.run) return;
+        if (!r.heard) {
+          if (r.reason === "denied" || r.reason === "stopped" || r.reason === "replaced") { verdict.hidden = true; return; }
+          verdict.hidden = false; verdict.className = "verdict mid"; verdict.textContent = silentMsg(r);
+          return;
+        }
+        if (r.score >= 0.8) { answer(true); return; }
+        verdict.hidden = false; verdict.className = "verdict mid"; verdict.textContent = "";
+        verdict.append(h("b", { text: "Not yet. " }), "I heard: " + r.heard + ". Try again, or tap an answer.");
+      });
+    });
+    show.addEventListener("click", function () { answer(false); });
+    card.append(h("div", { class: "etapic", role: "img", "aria-label": "Picture to name", text: cur.pic }),
+      h("div", { class: "etaask", lang: "ru", text: "Что это?" }), reveal, verdict, grid,
+      h("div", { class: "acts" }, mic, help, show, next));
+    box.append(card);
+  }
+  $("etagroup").addEventListener("change", startEta);
+
   /* ---------- tabs ---------- */
   function show(view) {
-    if (view !== "scenes") view = "phrases";
-    ["phrases", "scenes"].forEach(function (v) {
+    if (view !== "scenes" && view !== "eta") view = "phrases";
+    ["phrases", "scenes", "eta"].forEach(function (v) {
       $("view-" + v).hidden = v !== view;
       $("tab-" + v).setAttribute("aria-selected", String(v === view));
     });
     stopAudio();
+    if (hearing) hearing.finish("replaced");
+    if (view === "eta" && !eta.started) startEta();
     save("rft.tab", view);
   }
-  ["phrases", "scenes"].forEach(function (v) { $("tab-" + v).addEventListener("click", function () { show(v); }); });
+  ["phrases", "scenes", "eta"].forEach(function (v) { $("tab-" + v).addEventListener("click", function () { show(v); }); });
 
   /* ---------- immersion ---------- */
   function setImmersion(on) {

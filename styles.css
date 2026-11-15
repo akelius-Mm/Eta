@@ -130,3 +130,18 @@ label.field { font-size: 14px; font-weight: 600; }
 .ru span.hit { color: var(--good); }
 .verdict.live { font-size: 16px; }
 @media (prefers-reduced-motion: no-preference) { .ru span { transition: color .15s; } }
+.tabs { grid-template-columns: repeat(3, 1fr); }
+.pic { font-size: 34px; line-height: 1.1; }
+.score { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.etapic { font-size: 104px; line-height: 1.15; text-align: center; }
+.etaask { font-family: var(--font-ru); font-size: 20px; font-weight: 700; text-align: center; color: var(--cobalt); }
+.reveal { text-align: center; display: flex; flex-direction: column; gap: 4px; }
+.reveal .ru { font-size: 28px; color: var(--good); }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.choice { border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 10px; padding: 10px 8px; min-height: 60px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-width: 0; font-family: var(--font-ui); }
+.choice .ru { font-size: 19px; }
+.choice .say { font-size: 13px; }
+.choice.right { background: var(--good-soft); border-color: var(--good); }
+.choice.right .ru { color: var(--good); }
+.choice.wrong { background: var(--warn-soft); border-color: var(--warn); }
+.choice:disabled { cursor: default; }

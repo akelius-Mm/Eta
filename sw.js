@@ -1,6 +1,6 @@
 /* Keeps the app usable offline: serve from the network when possible, fall back to the saved copy. */
-var CACHE = "rft-v11";
-var FILES = ["./", "index.html", "styles.css", "phrases.js", "scenes.js", "app.js", "manifest.webmanifest", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png"];
+var CACHE = "rft-v12";
+var FILES = ["./", "index.html", "styles.css", "phrases.js", "scenes.js", "objects.js", "app.js", "manifest.webmanifest", "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png"];
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
 });

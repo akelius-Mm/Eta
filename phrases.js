@@ -124,33 +124,6 @@ window.TOPICS = [
 Какой красивый стол!|ka-KOY kra-SEE-vy stol|What a beautiful table!
 Я за рулём.|ya za roo-LYOM|I'm driving (a polite way to decline a drink)
 Это слишком много.|EH-ta SLEESH-kam MNOH-ga|That's too much`],
-["Food and drink", `хлеб|khlyep|bread
-суп|soop|soup
-борщ|borshch|borscht (beet soup)
-пельмени|peel-MYE-nee|dumplings
-блины|blee-NY|thin pancakes
-салат|sa-LAT|salad
-картошка|kar-TOSH-ka|potatoes
-мясо|MYA-sa|meat
-рыба|RY-ba|fish
-курица|KOO-ree-tsa|chicken
-сыр|syr|cheese
-масло|MAS-la|butter
-сметана|smee-TA-na|sour cream
-огурцы|a-goor-TSY|cucumbers
-икра|eek-RA|caviar
-пирог|pee-ROK|pie
-торт|tort|cake
-конфеты|kan-FYE-ty|candies
-варенье|va-RYE-nye|jam
-чай|chai|tea
-кофе|KOH-fye|coffee
-вода|va-DA|water
-сок|sok|juice
-молоко|ma-la-KOH|milk
-вино|vee-NOH|wine
-соль|sol|salt
-сахар|SA-khar|sugar`],
 ["Family", `мама|MA-ma|mom
 папа|PA-pa|dad
 бабушка|BA-boosh-ka|grandmother
@@ -273,23 +246,7 @@ window.TOPICS = [
 Где туалет?|gdye too-a-LYET|Where is the bathroom?
 Где можно помыть руки?|gdye MOZH-na pa-MYT ROO-kee|Where can I wash my hands?
 Я сейчас вернусь.|ya see-CHAS veer-NOOS|I'll be right back
-Вот, пожалуйста.|vot, pa-ZHAH-loos-ta|Here you are
-дом|dom|house
-кухня|KOOKH-nya|kitchen
-комната|KOM-na-ta|room
-стол|stol|table
-стул|stool|chair
-окно|ak-NOH|window
-дверь|dvyer|door
-чашка|CHASH-ka|cup
-тарелка|ta-RYEL-ka|plate
-ложка|LOZH-ka|spoon
-вилка|VEEL-ka|fork
-нож|nosh|knife
-цветы|tsvee-TY|flowers
-подарок|pa-DA-rak|gift
-собака|sa-BA-ka|dog
-кошка|KOSH-ka|cat`],
+Вот, пожалуйста.|vot, pa-ZHAH-loos-ta|Here you are`],
 ["Feelings and needs", `Мне хорошо.|mnye ha-ra-SHOH|I feel good
 Мне весело.|mnye VYE-see-la|I'm having fun
 Мне холодно.|mnye KHOH-lad-na|I'm cold
@@ -492,6 +449,59 @@ window.TOPICS = [
 лето|LYE-ta|summer
 осень|OH-seen|autumn
 Какой сегодня день?|ka-KOY see-VOD-nya dyen|What day is it today?`],
+["Asking for things", `Дайте, пожалуйста, ложку.|DAY-tye, pa-ZHAH-loos-ta, LOZH-koo|Please give me a spoon
+Дайте, пожалуйста, нож.|DAY-tye, pa-ZHAH-loos-ta, nosh|Please give me a knife
+Дайте, пожалуйста, салфетку.|DAY-tye, pa-ZHAH-loos-ta, sal-FYET-koo|Please give me a napkin
+Можно стакан воды?|MOZH-na sta-KAN va-DY|May I have a glass of water?
+Можно ещё хлеба?|MOZH-na ye-SHCHOH KHLYE-ba|May I have more bread?
+Покажите, пожалуйста.|pa-ka-ZHEE-tye, pa-ZHAH-loos-ta|Please show me
+Возьмите, пожалуйста.|vaz-MEE-tye, pa-ZHAH-loos-ta|Please take it
+Вот ваш чай.|vot vash chai|Here is your tea
+Где мой телефон?|gdye moy tee-lee-FON|Where is my phone?
+Где мои ключи?|gdye ma-EE klyoo-CHEE|Where are my keys?
+Где моя сумка?|gdye ma-YA SOOM-ka|Where is my bag?
+Это моё.|EH-ta ma-YOH|This is mine
+Это ваше?|EH-ta VA-she|Is this yours?
+У вас есть …?|oo vas yest …|Do you have …?
+У меня нет.|oo mee-NYA nyet|I don't have one
+Мне нужен зонт.|mnye NOO-zhen zont|I need an umbrella
+Мне нужна ложка.|mnye noozh-NA LOZH-ka|I need a spoon`],
+["Pets and animals", `У вас есть собака?|oo vas yest sa-BA-ka|Do you have a dog?
+Как его зовут?|kak ye-VOH za-VOOT|What is his name?
+Как её зовут?|kak ye-YOH za-VOOT|What is her name?
+Сколько ему лет?|SKOL-ka ye-MOO lyet|How old is he?
+Какая милая собака!|ka-KA-ya MEE-la-ya sa-BA-ka|What a cute dog!
+Какой красивый кот!|ka-KOY kra-SEE-vy kot|What a beautiful cat!
+Можно погладить?|MOZH-na pa-GLA-deet|May I pet it?
+Он кусается?|on koo-SA-yet-sa|Does he bite?
+Он очень умный.|on OH-chen OOM-ny|He is very smart
+Хороший мальчик!|ha-ROH-shee MAL-cheek|Good boy!
+Я люблю животных.|ya lyoob-LYOO zhee-VOT-nykh|I love animals`],
+["Cafe and store", `Меню, пожалуйста.|mee-NYOO, pa-ZHAH-loos-ta|The menu, please
+Что вы посоветуете?|shtoh vy pa-sa-VYE-too-ye-tye|What do you recommend?
+Мне, пожалуйста, борщ.|mnye, pa-ZHAH-loos-ta, borshch|Borscht for me, please
+Два кофе, пожалуйста.|dva KOH-fye, pa-ZHAH-loos-ta|Two coffees, please
+Счёт, пожалуйста.|shchot, pa-ZHAH-loos-ta|The bill, please
+Я угощаю.|ya oo-ga-SHCHA-yoo|It's my treat
+Можно картой?|MOZH-na KAR-tay|Can I pay by card?
+Сколько с меня?|SKOL-ka s mee-NYA|How much do I owe?
+Это дорого.|EH-ta DOH-ra-ga|That's expensive
+Это недорого.|EH-ta nee-DOH-ra-ga|That's not expensive
+Я возьму это.|ya vaz-MOO EH-ta|I'll take this
+Где касса?|gdye KAS-sa|Where is the checkout?
+Пакет не нужен.|pa-KYET nye NOO-zhen|I don't need a bag
+Спасибо, всё.|spa-SEE-ba, fsyo|Thanks, that's all`],
+["Colors and looks", `Какой это цвет?|ka-KOY EH-ta tsvyet|What color is this?
+Мой любимый цвет синий.|moy lyoo-BEE-my tsvyet SEE-nee|My favorite color is blue
+Красивое платье!|kra-SEE-va-ye PLA-tye|Beautiful dress!
+Вам очень идёт.|vam OH-chen ee-DYOT|It suits you very well
+Красная роза.|KRAS-na-ya ROH-za|A red rose
+Белый снег.|BYE-ly snyek|White snow
+Чёрный чай.|CHOR-ny chai|Black tea
+Зелёный чай.|zee-LYOH-ny chai|Green tea
+Чёрный кофе.|CHOR-ny KOH-fye|Black coffee
+Красное вино.|KRAS-na-ye vee-NOH|Red wine
+Белое вино.|BYE-la-ye vee-NOH|White wine`],
 ["Little words", `я|ya|I
 вы|vy|you (polite)
 он|on|he
