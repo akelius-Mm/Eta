@@ -38,8 +38,22 @@
   function clean(text) { return String(text || "").replace(/…/g, "").trim(); }
 
   /* A picture is an emoji, a small group of emoji standing for a room, or one of the drawings in ICONS. */
-  function picNode(pic, cls) {
+  var photosOn = load("rft.photos", true);
+  function picNode(pic, cls, ru) {
     var d = h("div", { class: cls });
+    var path = photosOn && window.PHOTOS && window.PHOTOS[ru];
+    if (path) {
+      /* load the real photo in the background; swap it in only once it has arrived */
+      var img = new Image(), tried = false;
+      img.alt = ""; img.className = "photo";
+      img.onload = function () { d.textContent = ""; d.classList.remove("drawn", "cluster"); d.classList.add("hasphoto"); d.append(img); };
+      img.onerror = function () {
+        if (tried) return;
+        tried = true;
+        img.src = "https://commons.wikimedia.org/wiki/Special:FilePath/" + path.split("/")[2] + "?width=330";
+      };
+      img.src = "https://thumb.wikimedia.org/wikipedia/commons/thumb/" + path;
+    }
     if (pic.indexOf("svg:") === 0) { d.innerHTML = window.ICONS[pic.slice(4)] || ""; d.classList.add("drawn"); }
     else {
       d.textContent = pic;
@@ -321,7 +335,7 @@
     var mic = h("button", { class: "act mic", text: "Say it" });
     var ruEl = item.querySelector(".ru");
     wordSpans(ruEl, p.ru);
-    if (p.pic) item.insertBefore(picNode(p.pic, "pic"), item.firstChild);
+    if (p.pic) item.insertBefore(picNode(p.pic, "pic", p.ru), item.firstChild);
     function live(text, heard) { verdict.hidden = false; verdict.className = "verdict live"; verdict.textContent = text; paint(ruEl, heard); }
     mic.addEventListener("click", function () {
       paint(ruEl, "");
@@ -541,7 +555,7 @@
       });
     });
     show.addEventListener("click", function () { answer(false); });
-    var picture = picNode(cur.pic, "etapic");
+    var picture = picNode(cur.pic, "etapic", cur.ru);
     picture.setAttribute("role", "img"); picture.setAttribute("aria-label", "Picture to name");
     card.append(picture,
       h("div", { class: "etaask", lang: "ru", text: "Что это?" }), reveal, verdict, grid,
@@ -634,7 +648,7 @@
     });
     show.addEventListener("click", function () { answer(false); });
     card.append(h("div", { class: "etaask", lang: "ru", text: "Как сказать по-русски?" }));
-    if (cur.pic) card.append(picNode(cur.pic, "pic kakpic"));
+    if (cur.pic) card.append(picNode(cur.pic, "pic kakpic", cur.ru));
     card.append(h("div", { class: "kaken", text: cur.en }), blanks, reveal, verdict,
       h("div", { class: "acts" }, mic, show, knew, next));
     box.append(card);
@@ -676,6 +690,8 @@
     if (eta.started) startEta();
     if (kak.started) startKak();
   });
+  $("photos").setAttribute("aria-pressed", String(photosOn));
+  $("photos").addEventListener("click", function () { save("rft.photos", !photosOn); location.reload(); });
   function setSlow(on) { slow = on; $("slow").setAttribute("aria-pressed", String(on)); save("rft.slow", on); }
   $("slow").addEventListener("click", function () { setSlow(!slow); });
   setSlow(slow);
