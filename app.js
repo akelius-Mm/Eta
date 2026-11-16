@@ -512,6 +512,7 @@
     var show = h("button", { class: "act", text: "Show me" });
     var next = h("button", { class: "act primary", text: "Next", hidden: "" });
     next.addEventListener("click", nextEta);
+    var hearIt = listenBtn(cur.ru); hearIt.hidden = true; /* appears with the answer so you can replay it */
     function answer(ok, picked) {
       if (done || run !== eta.run) return;
       done = true;
@@ -525,7 +526,7 @@
       verdict.textContent = ok ? "Да! Молодец!"
         : (picked ? "You picked " + picked.getAttribute("data-ru") + ". " : "") + "This one will come back in a moment.";
       grid.hidden = true;
-      reveal.hidden = false; mic.hidden = true; show.hidden = true; next.hidden = false;
+      reveal.hidden = false; mic.hidden = true; show.hidden = true; next.hidden = false; hearIt.hidden = false;
       if (ok) {
         eta.right++;
         if (!learned[cur.ru]) { learned[cur.ru] = 1; save("rft.learned", learned); renderCount(); renderTopics(); }
@@ -559,7 +560,7 @@
     picture.setAttribute("role", "img"); picture.setAttribute("aria-label", "Picture to name");
     card.append(picture,
       h("div", { class: "etaask", lang: "ru", text: "Что это?" }), reveal, verdict, grid,
-      h("div", { class: "acts" }, mic, help, show, next));
+      h("div", { class: "acts" }, mic, help, show, hearIt, next));
     box.append(card);
   }
   $("etagroup").addEventListener("change", startEta);
@@ -598,6 +599,7 @@
     var knew = h("button", { class: "act", text: "I knew it", hidden: "" });
     var next = h("button", { class: "act primary", text: "Next", hidden: "" });
     next.addEventListener("click", nextKak);
+    var hearIt = listenBtn(cur.ru); hearIt.hidden = true; /* appears with the answer so you can replay it */
     function count(ok) {
       if (ok) {
         kak.right++;
@@ -611,7 +613,7 @@
       if (hearing && hearing.btn === mic) hearing.finish("replaced");
       verdict.hidden = false; verdict.className = "verdict " + (ok ? "good" : "mid");
       verdict.textContent = ok ? "Да! Молодец!" : "This one will come back in a moment.";
-      blanks.hidden = true; reveal.hidden = false; mic.hidden = true; show.hidden = true; next.hidden = false;
+      blanks.hidden = true; reveal.hidden = false; mic.hidden = true; show.hidden = true; next.hidden = false; hearIt.hidden = false;
       /* where the phone cannot listen, you judge yourself after seeing the answer */
       if (!ok && (!SR || app.classList.contains("no-mic"))) {
         knew.hidden = false;
@@ -650,7 +652,7 @@
     card.append(h("div", { class: "etaask", lang: "ru", text: "Как сказать по-русски?" }));
     if (cur.pic) card.append(picNode(cur.pic, "pic kakpic", cur.ru));
     card.append(h("div", { class: "kaken", text: cur.en }), blanks, reveal, verdict,
-      h("div", { class: "acts" }, mic, show, knew, next));
+      h("div", { class: "acts" }, mic, show, hearIt, knew, next));
     box.append(card);
   }
   $("kakgroup").addEventListener("change", startKak);
